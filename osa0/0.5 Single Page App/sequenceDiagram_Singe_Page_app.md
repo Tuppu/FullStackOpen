@@ -30,5 +30,5 @@ sequenceDiagram
     server-->>browser: [{ "content": "Saludos desde Chile!", "date": "2024-09-05T20:31:55.325Z" }, ... ], 200 OK
     deactivate server    
 
-    Note right of browser: The browser executes the callback function that renders the notes 
+    Note right of browser: The browser executes the redrawNotes function that rerenders the notes 
 ```
