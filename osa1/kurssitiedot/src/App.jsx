@@ -10,12 +10,16 @@ const Total = (props) => (
 const Content = (props) => {
   return (
   <>
-  {props.parts.map(function (i) {
-    return <p>{i.part} {i.exercises}</p>;
+  {props.parts.map(function (i, index) {
+    return <Part key={i.part} index={index} part={i.part} exercise={i.exercise} />;
   })}
   </>
   );
 };
+
+const Part = (props) => (
+  <p>{props.part} {props.exercise}</p>
+);
 
 const App = () => {
   const course = 'Half Stack application development'
@@ -29,9 +33,9 @@ const App = () => {
   return (
     <div>
       <Header course={course} />
-      <Content parts={[{"part": part1, "exercises": 10},
-         {"part": part2, "exercises": 7},
-         {"part": part3, "exercises": 14}]} />
+      <Content parts={[{"part": part1, "exercise": 10},
+         {"part": part2, "exercise": 7},
+         {"part": part3, "exercise": 14}]} />
       <Total exercises={[exercises1, exercises2, exercises3]} />
     </div>
   )
