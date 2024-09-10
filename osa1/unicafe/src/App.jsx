@@ -13,17 +13,26 @@ const Statistics = (props) => {
     return all > 0 ? (good / all * 100) : 0;
   }
 
-  return (
-    <div>
-      <h1>statistics</h1>
-      <div>good {good}</div>
-      <div>neutral {neutral}</div>
-      <div>bad {props.bad}</div>
-      <div>all {all}</div>
-      <div>average {calculateAvarage()}</div>
-      <div>positive {calculatePositivePercentage()} %</div>
-    </div>
-  )
+  if (all > 0) {
+    return(
+      <div>
+        <h1>statistics</h1>
+        <div>good {good}</div>
+        <div>neutral {neutral}</div>
+        <div>bad {props.bad}</div>
+        <div>all {all}</div>
+        <div>average {calculateAvarage()}</div>
+        <div>positive {calculatePositivePercentage()} %</div>
+      </div>
+    )
+  } else {
+    return (
+      <div>
+        <h1>statistics</h1>
+        <div>No feedback given</div>
+      </div>
+    )
+  }
 }
 
 const Button = ({ handleClick, text }) => (
