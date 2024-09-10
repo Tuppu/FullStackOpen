@@ -1,5 +1,44 @@
 import { useState } from 'react'
 
+const Filter = ({newFilter, onChange}) => {
+  return (      <div>
+    filter shown with <input value={newFilter} onChange={onChange} />
+  </div>)
+}
+
+const PersonForm = ({addPerson, newName, handleNameChange, newNumber, handleNumberChange}) => {
+  return (
+    <form onSubmit={addPerson}>
+    <div>
+      name: <input value={newName} onChange={handleNameChange} />
+    </div>
+    <div>
+      number: <input value={newNumber} onChange={handleNumberChange} />
+    </div>
+    <div>
+      <button type="submit">add</button>
+    </div>
+  </form>
+  )
+}
+
+const Persons = ({persons, newFilter}) => {
+  return (
+    persons.filter((person) => person.name.toLowerCase().includes(newFilter.toLowerCase()))
+      .map(person =>
+        <Person key={person.name} person={person} />
+    )
+  )
+}
+
+const Person = ({person}) => {
+  return (
+    <div>
+      {person.name} {person.number}
+    </div>
+  )
+}
+
 const App = () => {
   const [persons, setPersons] = useState([
     { name: 'Arto Hellas', number: '040-123456' },
@@ -42,30 +81,14 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <div>
-          filter shown with <input value={newFilter} onChange={handlefilterChange} />
-        </div>
-      <h2>add a new</h2>
-      <form onSubmit={addPerson}>
-        <div>
-          name: <input value={newName} onChange={handleNameChange} />
-        </div>
-        <div>
-          number: <input value={newNumber} onChange={handleNumberChange} />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
-      <h2>Numbers</h2>
-      {persons.filter((person) => person.name.toLowerCase().includes(newFilter.toLowerCase()))
-        .map(person => 
-      <div key={person.name}>
-        {person.name} {person.number}
-      </div>)}
+      <Filter newFilter={newFilter} onChange={handlefilterChange} />
+      <h3>add a new</h3>
+      <PersonForm newName={newName} handleNameChange={handleNameChange} newNumber={newNumber} 
+        handleNumberChange={handleNumberChange} addPerson={addPerson} />
+      <h3>Numbers</h3>
+      <Persons persons={persons} newFilter={newFilter} />
     </div>
   )
-
 }
 
 export default App
