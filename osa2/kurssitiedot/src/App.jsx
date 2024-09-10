@@ -13,12 +13,12 @@ const Header = ({courseName}) => (
 
 const Total = ({parts}) => {
 
-  const totaExcercises = parts.reduce((total, current) => {
+  const totalExcercises = parts.reduce((total, current) => {
         return total + current.exercises;
     }, 0);
   
   return (
-  <b><p>total of {totaExcercises} excercises</p></b>
+  <b><p>total of {totalExcercises} excercises</p></b>
 )};
 
 const Content = ({parts}) => {
