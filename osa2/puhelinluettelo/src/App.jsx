@@ -64,8 +64,23 @@ const App = () => {
     const foundPerson = persons.find((person) => person.name == newName);
 
     if (foundPerson) {
-      alert(`${newName} is already added to phonebook`);
-      return
+      if (!window.confirm(`${foundPerson.name} id already added to phonebook, replace the old number with a new one?`)) {
+        return;
+      }
+
+      const changedPerson = { ...foundPerson, number: newNumber }
+
+      personService
+        .update(foundPerson.id, changedPerson)
+          .then(updatedPerson => {
+            setPersons(persons.map(p => p.id !== changedPerson.id ? p : updatedPerson))
+        })
+        .catch(error => {
+          console.log(error.response.statusText)
+          alert(error.response.statusText);
+        })
+
+      return;
     }
 
     personService
@@ -73,12 +88,17 @@ const App = () => {
         .then(returnedPerson => {
           setPersons(persons.concat(returnedPerson))
           setNewName('');
-          setNewNumber('');    
+          setNewNumber('');
+          return;
+        })
+        .catch(error => {
+          console.log(error.response.statusText)
+          alert(error.response.statusText);
         })
   }
 
   const deletePerson = (id) => {
-    const deletingPerson = persons.find((person) => person.id == id);
+    const deletingPerson = persons.find((person) => person.id === id);
 
     if (!window.confirm(`Delete ${deletingPerson.name}`)) {
       return;
@@ -97,6 +117,14 @@ const App = () => {
           setPersons(updatedPersons);
           setNewName('');
           setNewNumber('');   
+        })
+        .catch(error => {
+          console.log(error.response.statusText)
+          const unfoundPerson = persons.find((person) => person.id === id);
+          alert(
+            `the person '${unfoundPerson.name}' was already deleted from server`
+          )
+          setPersons(persons.filter(p => p.id !== id))
         })
   }
 
