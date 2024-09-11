@@ -1,67 +1,9 @@
 import { useState, useEffect } from 'react'
+import Filter from './components/Filter'
+import Notification from './components/Notification'
+import PersonForm from './components/PersonForm'
+import Persons from './components/Persons'
 import personService from './services/persons'
-
-const Filter = ({newFilter, onChange}) => {
-  return (      <div>
-    filter shown with <input value={newFilter} onChange={onChange} />
-  </div>)
-}
-
-const PersonForm = ({addPerson, newName, handleNameChange, newNumber, handleNumberChange}) => {
-  return (
-    <form onSubmit={addPerson}>
-    <div>
-      name: <input value={newName} onChange={handleNameChange} />
-    </div>
-    <div>
-      number: <input value={newNumber} onChange={handleNumberChange} />
-    </div>
-    <div>
-      <button type="submit">add</button>
-    </div>
-  </form>
-  )
-}
-
-const Persons = ({persons, newFilter, deletePerson}) => {
-  return (
-    persons.filter((person) => person.name.toLowerCase().includes(newFilter.toLowerCase()))
-      .map(person =>
-        <Person key={person.name} person={person} deletePerson={() => deletePerson(person.id)} />
-    )
-  )
-}
-
-const Person = ({person, deletePerson}) => {
-  return (
-    <div>
-      {person.name} {person.number} <button onClick={deletePerson}>{'delete'}</button>
-    </div>
-  )
-}
-
-const Notification = ({ message, type }) => {
-  if (message === null) {
-    return null
-  }
-
-  switch (type) {
-    case 'success':
-      return (
-        <div className={type}>
-          {message}
-        </div>
-      )
-    case 'error':
-    default:
-      return (
-        <div className="error">
-          {message}
-        </div>
-      )
-  }
-  
-}
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -107,8 +49,20 @@ const App = () => {
             }, 5000) 
         })
         .catch(error => {
-          console.log(error.response.statusText)
-          alert(error.response.statusText);
+          setErrorMessage(`Information of '${changedPerson.name}' has been removed from server`)
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
+          const updatedPersons = persons.reduce((acc, item) => {
+            if (item.id !== foundPerson.id) {
+                acc.push(item);
+            }
+            return acc;
+          }, []);
+
+          setPersons(updatedPersons);
+          setNewName('');
+          setNewNumber('');  
         })
 
       return;
@@ -130,8 +84,22 @@ const App = () => {
           return;
         })
         .catch(error => {
-          console.log(error.response.statusText)
-          alert(error.response.statusText);
+          setErrorMessage(
+            `Information of '${personObject.name}' has already been removed from server`
+          )
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
+          const updatedPersons = persons.reduce((acc, item) => {
+            if (item.id !== personObject.id) {
+                acc.push(item);
+            }
+            return acc;
+          }, []);
+
+          setPersons(updatedPersons);
+          setNewName('');
+          setNewNumber('');  
         })
   }
 
@@ -170,7 +138,16 @@ const App = () => {
           setTimeout(() => {
             setErrorMessage(null)
           }, 5000)
-          setPersons(persons.filter(p => p.id !== id))
+          const updatedPersons = persons.reduce((acc, item) => {
+            if (item.id !== id) {
+                acc.push(item);
+            }
+            return acc;
+          }, []);
+
+          setPersons(updatedPersons);
+          setNewName('');
+          setNewNumber('');  
         })
   }
 
@@ -187,8 +164,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={successMessage} type='success' />
-      {/*<Notification message={errorMessage} type='error' />*/}
+      <Notification message={successMessage ?? errorMessage} type={successMessage ? 'success' : 'error'} />
       <Filter newFilter={newFilter} onChange={handlefilterChange} />
       <h3>add a new</h3>
       <PersonForm newName={newName} handleNameChange={handleNameChange} newNumber={newNumber} 
