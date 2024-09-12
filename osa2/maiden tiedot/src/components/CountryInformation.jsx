@@ -1,4 +1,4 @@
-const Country = (country) => {
+const CountryInformation = (country) => {
     if (country.country) {
         const theCountry = country.country
 
@@ -6,9 +6,7 @@ const Country = (country) => {
         for (const [key, value] of Object.entries(theCountry.languages)) {
             languages.push({"key":key, "value": value});
           }
-
-          console.log(languages);
-
+          
         return (
             <div>
                 <h1>{theCountry.name.common}</h1>
@@ -26,4 +24,4 @@ const Country = (country) => {
     }
 }
   
-export default Country;
+export default CountryInformation;

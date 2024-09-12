@@ -1,4 +1,6 @@
-const Countries = ({countries}) => {
+import CountryListItem from "./CountryListItem"
+
+const CountriesList = ({countries, showCountry}) => {
     if (countries.length > 10) {
         return (<div>Too many matches, specify another filter</div>)
     } else if (countries.length == 0) {
@@ -7,9 +9,10 @@ const Countries = ({countries}) => {
         return (<></>)
     } else {
         return (
-            countries.map(country => <div key={country.name.common}>{country.name.common}</div>)
+
+            countries.map(country => <CountryListItem key={country.name.official} CountryName={country.name.common} showCountry={showCountry}></CountryListItem>)
         )
     }
 }
   
-export default Countries;
+export default CountriesList;
