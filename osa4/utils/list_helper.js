@@ -32,9 +32,37 @@ const mostBlogs = (blogs) => {
   return theAuthor
 }
 
+const mostLikes = (blogs) => {
+
+  if (!blogs.length) return null
+
+  let authBlogs = _.groupBy(blogs, 'author')
+
+  let authLikes = []
+  _.forEach(authBlogs, function(value, key) {
+    const tempLikes = value.reduce((total, { likes }) => total + likes, 0)
+    authLikes.push({
+      author: key,
+      likes: tempLikes
+    })
+  })
+
+  let ordered = _.orderBy(authLikes, 'likes', 'desc')
+
+  let mostBlogs = ordered[0]
+
+  let theAuthor = {
+    author: mostBlogs.author,
+    likes: mostBlogs.likes
+  }
+
+  return theAuthor
+}
+
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
-  mostBlogs
+  mostBlogs,
+  mostLikes
 }

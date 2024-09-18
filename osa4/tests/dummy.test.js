@@ -97,7 +97,7 @@ describe('most favorited blog', () => {
     assert.strictEqual(result.likes, 100)
   })
 
-  test('dummy returns all likes', () => {
+  test('of a bigger list is calculated right', () => {
     const result = listHelper.favoriteBlog(blogsMany)
     assert.strictEqual(result.likes, 12)
   })
@@ -114,8 +114,25 @@ describe('most blogs by author', () => {
     assert.strictEqual(result.blogs, 1)
   })
 
-  test('dummy returns all likes', () => {
+  test('of a bigger list is calculated right', () => {
     const result = listHelper.mostBlogs(blogsMany)
     assert.strictEqual(result.blogs, 3)
+  })
+})
+
+describe('most blogs by author', () => {
+  test('of empty list is zero', () => {
+    const result = listHelper.mostLikes([])
+    assert.strictEqual(result, null)
+  })
+
+  test('when list has only one blog equals the likes of that', () => {
+    const result = listHelper.mostLikes(blogOnlyOne)
+    assert.strictEqual(result.likes, 100)
+  })
+
+  test('of a bigger list is calculated right', () => {
+    const result = listHelper.mostLikes(blogsMany)
+    assert.strictEqual(result.likes, 17)
   })
 })
