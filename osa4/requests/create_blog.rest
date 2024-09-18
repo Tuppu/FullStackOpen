@@ -2,8 +2,8 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-  "title": "toka",
-  "author": "YLE",
-  "url": "https://www.yle.fi",
-  "likes": -1
+  "title": "eka",
+  "author": "Tuomas Liikala",
+  "url": "https://www.tuppu.fi",
+  "likes": 100
 }
