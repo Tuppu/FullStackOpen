@@ -102,3 +102,20 @@ describe('most favorited blog', () => {
     assert.strictEqual(result.likes, 12)
   })
 })
+
+describe('most blogs by author', () => {
+  test('of empty list is zero', () => {
+    const result = listHelper.mostBlogs([])
+    assert.strictEqual(result, null)
+  })
+
+  test('when list has only one blog equals the likes of that', () => {
+    const result = listHelper.mostBlogs(blogOnlyOne)
+    assert.strictEqual(result.blogs, 1)
+  })
+
+  test('dummy returns all likes', () => {
+    const result = listHelper.mostBlogs(blogsMany)
+    assert.strictEqual(result.blogs, 3)
+  })
+})
