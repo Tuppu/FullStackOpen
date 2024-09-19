@@ -1,9 +1,15 @@
 const blogs = require('mongoose')
 
-const blogSchema = blogs.Schema({
-  title: String,
+const blogSchema = new blogs.Schema({
+  title: {
+    type: String,
+    required: true
+  },
   author: String,
-  url: String,
+  url: {
+    type: String,
+    required: true
+  },
   likes: Number
 })
 

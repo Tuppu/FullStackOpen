@@ -7,15 +7,9 @@ const api = supertest(app)
 const helper = require('./test.helper')
 const Blog = require('../models/blog')
 
-
 beforeEach(async () => {
   await Blog.deleteMany({})
-
-  let noteObject = new Blog(helper.initialBlogs[0])
-  await noteObject.save()
-
-  noteObject = new Blog(helper.initialBlogs[1])
-  await noteObject.save()
+  await Blog.insertMany(helper.initialBlogs)
 })
 
 test('blogs are returned as json', async () => {
@@ -41,7 +35,7 @@ test('blog has an "id" field', async () => {
   assert.strictEqual(containsOnlyCorrectIdKey, true)
 })
 
-test('a valid blog can be added ', async () => {
+test('a valid blog can be added', async () => {
   const newBlog = {
     'title': 'FSO',
     'author': 'Helsingin yliopisto, Houston Inc., etc.',
@@ -64,7 +58,7 @@ test('a valid blog can be added ', async () => {
   assert(foundUrl.includes('https://www.fullstackopen.com'))
 })
 
-test('an invalid blog that missing a likes ', async () => {
+test('an invalid blog that missing a likes', async () => {
   const newBlog = {
     'title': 'FSO',
     'author': 'Helsingin yliopisto, Houston Inc., etc.',
@@ -83,6 +77,32 @@ test('an invalid blog that missing a likes ', async () => {
 
   assert.strictEqual(response.body.length, helper.initialBlogs.length + 1)
   assert.strictEqual(foundLikes[response.body.length-1], 0)
+})
+
+test('an invalid blog that missing a url', async () => {
+  const newBlog = {
+    'title': 'FSO',
+    'author': 'Helsingin yliopisto, Houston Inc., etc.',
+    'likes': 11
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+})
+
+test('an invalid blog that missing a title', async () => {
+  const newBlog = {
+    'author': 'Helsingin yliopisto, Houston Inc., etc.',
+    'url': 'https://www.fullstackopen.com',
+    'likes': 11
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
 })
 
 after(async () => {

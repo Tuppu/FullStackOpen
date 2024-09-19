@@ -3,12 +3,15 @@ const Blog = require('../models/blog')
 
 blogRouter.get('/', async (request, response) => {
   const blogs = await Blog.find({})
-
   response.json(blogs)
 })
 
 blogRouter.post('/', async (request, response) => {
   const { title, author, url, likes } = request.body
+
+  if (!title || !url) {
+    response.status(400).end()
+  }
 
   const blog = new Blog({
     title,
