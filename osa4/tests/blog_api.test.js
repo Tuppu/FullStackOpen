@@ -19,6 +19,16 @@ test('there are two blogs', async () => {
   assert.strictEqual(response.body.length, 2)
 })
 
+test('blog has an "id" field', async () => {
+  const response = await api.get('/api/blogs')
+
+  const containsOnlyCorrectIdKey = response.body.some(blog => {
+    return ('id' in blog && !('_id' in blog))
+  })
+
+  assert.strictEqual(containsOnlyCorrectIdKey, true)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
