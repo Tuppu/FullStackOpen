@@ -5,13 +5,15 @@ const initialBlogs = [
     'title': 'eka',
     'author': 'Tuomas Liikala',
     'url': 'https://www.tuppu.fi',
-    'likes': 100
+    'likes': 100,
+    '_id': '66e96b86e77085528c3db190'
   },
   {
     'title': 'toka',
     'author': 'YLE',
     'url': 'https://www.yle.fi',
-    'likes': 1
+    'likes': 1,
+    '_id': '66e96b86e77085528c3db195'
   }
 ]
 
