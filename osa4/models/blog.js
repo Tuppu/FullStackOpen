@@ -7,4 +7,5 @@ const blogSchema = blogs.Schema({
   likes: Number
 })
 
+
 module.exports = blogs.model('Blog', blogSchema)
