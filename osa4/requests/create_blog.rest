@@ -4,6 +4,6 @@ Content-Type: application/json
 {
   "title": "eka",
   "author": "Tuomas Liikala",
-  "url": "https://www.tuppu.fi",
-  "likes": 100
+  "url": "https://www.yle.fi",
+  "likes": 1
 }
