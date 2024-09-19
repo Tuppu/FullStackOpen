@@ -78,7 +78,7 @@ describe('when there is initially some blogs saved', () => {
       const foundLikes = response.body.map(r => r.likes)
 
       assert.strictEqual(response.body.length, helper.initialBlogs.length + 1)
-      assert.strictEqual(foundLikes[response.body.length-1], 0)
+      assert.strictEqual(foundLikes[response.body.length-1], '0')
     })
 
     test('an invalid blog that missing a url', async () => {
@@ -123,6 +123,78 @@ describe('when there is initially some blogs saved', () => {
 
       const foundIds = blogsAtEnd.map(r => r.id)
       assert(!foundIds.includes(blogToDelete.id))
+    })
+  })
+
+  describe('updation of a blog', () => {
+    test('set new likes', async () => {
+      const initialId = helper.initialBlogs[0]._id
+
+      const updateBlog = {
+        'likes': 1
+      }
+
+      const response = await api
+        .put(`/api/blogs/${initialId}`,updateBlog)
+        .send(updateBlog)
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+
+      assert.strictEqual(response.body.likes, '1')
+    })
+
+    test('set missing likes', async () => {
+      const initialId = helper.initialBlogs[0]._id
+
+      const updateBlog = {
+        'likes': null
+      }
+
+      await api
+        .put(`/api/blogs/${initialId}`,updateBlog)
+        .send(updateBlog)
+        .expect(403)
+    })
+
+    test('set missing title', async () => {
+      const initialId = helper.initialBlogs[0]._id
+
+      const updateBlog = {
+        'title': null
+      }
+
+      await api
+        .put(`/api/blogs/${initialId}`,updateBlog)
+        .send(updateBlog)
+        .expect(403)
+    })
+
+    test('set missing author', async () => {
+      const initialId = helper.initialBlogs[0]._id
+
+      const updateBlog = {
+        'author': null
+      }
+
+      const response = await api
+        .put(`/api/blogs/${initialId}`,updateBlog)
+        .send(updateBlog)
+        .expect(200).expect('Content-Type', /application\/json/)
+
+      assert.strictEqual(response.body.author, null)
+    })
+
+    test('set missing url', async () => {
+      const initialId = helper.initialBlogs[0]._id
+
+      const updateBlog = {
+        'url': null
+      }
+
+      await api
+        .put(`/api/blogs/${initialId}`,updateBlog)
+        .send(updateBlog)
+        .expect(403)
     })
   })
 })

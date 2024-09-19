@@ -10,7 +10,10 @@ const blogSchema = new blogs.Schema({
     type: String,
     required: true
   },
-  likes: Number
+  likes: {
+    type: String,
+    required: true
+  },
 })
 
 blogSchema.set('toJSON', {
