@@ -10,7 +10,7 @@ blogRouter.post('/', async (request, response) => {
   const { title, author, url, likes } = request.body
 
   if (!title || !url) {
-    response.status(400).end()
+    return response.status(400).end()
   }
 
   const blog = new Blog({
