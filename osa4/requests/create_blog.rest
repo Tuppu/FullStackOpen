@@ -1,10 +1,10 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InR1cHB1IiwiaWQiOiI2NmVkMmFlMDgxMzUwMGM5YmIzNDNlZDciLCJpYXQiOjE3MjY4MzA3ODV9.ivquTYpaR-Hc5SqPYMCzgbSYV96kQ_-CTf0tPFiKU50
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InR1cHB1IiwiaWQiOiI2NmVkMmFlMDgxMzUwMGM5YmIzNDNlZDciLCJpYXQiOjE3MjcwNjUzMjR9.ZEkbwPnBfkDxONIAMfJRXItCf721L6un6ENDnUfki1E
 
 {
   "title": "uusi",
   "author": "Tuomas Liikala",
-  "url": "https://www.yle2.fi",
-  "likes": 1
+  "url": "https://www.yle5.fi",
+  "likes": 5
 }

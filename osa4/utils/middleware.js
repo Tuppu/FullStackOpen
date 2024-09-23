@@ -1,5 +1,4 @@
 const logger = require('./logger')
-
 const morgan = require('morgan')
 morgan('tiny')
 morgan.token('res-body', function (req, res)
@@ -28,8 +27,22 @@ const errorHandler = (error, request, response, next) => {
   next(error)
 }
 
+const tokenExtractor = (request, response, next) => {
+  const authorization = request.get('authorization')
+
+  if (!authorization) {
+    return response.status(401).json({ message: 'Authorization token is required.' })
+  }
+
+  if (authorization && authorization.startsWith('Bearer ')) {
+    request.token = authorization.replace('Bearer ', '')
+  }
+  next()
+}
+
 module.exports = {
   morgan_logger,
   unknownEndpoint,
-  errorHandler
+  errorHandler,
+  tokenExtractor
 }
