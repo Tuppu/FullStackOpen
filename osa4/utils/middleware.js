@@ -24,22 +24,13 @@ const errorHandler = (error, request, response, next) => {
     return response.status(400).json({ error: 'expected `username` to be unique' })
   } else if (error.name ===  'JsonWebTokenError') {
     return response.status(400).json({ error: 'token missing or invalid' })
+  } else if (error.name === 'TokenExpiredError') {
+    return response.status(401).json({
+      error: 'token expired'
+    })
   }
 
   next(error)
-}
-
-const tokenExtractor = (request, response, next) => {
-  const authorization = request.get('authorization')
-
-  if (!authorization) {
-    return response.status(401).json({ message: 'Authorization token is required.' })
-  }
-
-  if (authorization && authorization.startsWith('Bearer ')) {
-    request.token = authorization.replace('Bearer ', '')
-  }
-  next()
 }
 
 const userExtractor = async (request, response, next) => {
@@ -65,6 +56,5 @@ module.exports = {
   morgan_logger,
   unknownEndpoint,
   errorHandler,
-  tokenExtractor,
   userExtractor
 }
