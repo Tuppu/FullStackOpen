@@ -1,10 +1,10 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InR1cHB1IiwiaWQiOiI2NmVkMmFlMDgxMzUwMGM5YmIzNDNlZDciLCJpYXQiOjE3MjcwNjUzMjR9.ZEkbwPnBfkDxONIAMfJRXItCf721L6un6ENDnUfki1E
+Authorization: Bearer ...
 
 {
   "title": "uusi",
   "author": "Tuomas Liikala",
   "url": "https://www.yle5.fi",
-  "likes": 5
+  "likes": 500
 }
