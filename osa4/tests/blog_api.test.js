@@ -6,28 +6,56 @@ const app = require('../app')
 const api = supertest(app)
 const helper = require('./test.helper')
 const Blog = require('../models/blog')
+const User = require('../models/user')
+const jwt = require('jsonwebtoken')
+
+let loggedInUserToken = null
+let userForToken = null
 
 describe('when there is initially some blogs saved', () => {
   beforeEach(async () => {
     await Blog.deleteMany({})
     await Blog.insertMany(helper.initialBlogs)
+
+    await User.deleteMany({})
+    //const passwordHash = await bcrypt.hash('sekret', 10)
+    const user = new User({
+      _id: '66f12281cde3bf9dead2fa5b',
+      username: 'root',
+      passwordHash: '$2b$10$uhhOAl8/mcYzaFhQoxMkKuLzQLBqFN9BcH2hdI.l.t4/M5QBasvdW',
+      blogs: [],
+      __v: 0
+    })
+    await user.save()
+
+    userForToken = {
+      username: user.username,
+      id: user._id,
+    }
+
+    loggedInUserToken = 'Bearer ' + jwt.sign(userForToken, process.env.SECRET)
   })
 
   test('blogs are returned as json', async () => {
+
     await api
       .get('/api/blogs')
+      .set('Authorization', loggedInUserToken)
       .expect(200)
       .expect('Content-Type', /application\/json/)
   })
 
   test('all blogs are returned', async () => {
+
     const response = await api.get('/api/blogs')
+      .set('Authorization', loggedInUserToken)
 
     assert.strictEqual(response.body.length, helper.initialBlogs.length)
   })
 
   test('blog has an "id" field', async () => {
     const response = await api.get('/api/blogs')
+      .set('Authorization', loggedInUserToken)
 
     const containsOnlyCorrectIdKey = response.body.some(blog => {
       return ('id' in blog && !('_id' in blog))
@@ -47,11 +75,13 @@ describe('when there is initially some blogs saved', () => {
 
       await api
         .post('/api/blogs')
+        .set('Authorization', loggedInUserToken)
         .send(newBlog)
         .expect(201)
         .expect('Content-Type', /application\/json/)
 
       const response = await api.get('/api/blogs')
+        .set('Authorization', loggedInUserToken)
 
       const foundUrl = response.body.map(r => r.url)
 
@@ -69,11 +99,14 @@ describe('when there is initially some blogs saved', () => {
 
       await api
         .post('/api/blogs')
+        .set('Accept', 'application/json')
+        .set('Authorization', loggedInUserToken)
         .send(newBlog)
         .expect(201)
         .expect('Content-Type', /application\/json/)
 
       const response = await api.get('/api/blogs')
+        .set('Authorization', loggedInUserToken)
 
       const foundLikes = response.body.map(r => r.likes)
 
@@ -90,6 +123,7 @@ describe('when there is initially some blogs saved', () => {
 
       await api
         .post('/api/blogs')
+        .set('Authorization', loggedInUserToken)
         .send(newBlog)
         .expect(400)
     })
@@ -103,6 +137,7 @@ describe('when there is initially some blogs saved', () => {
 
       await api
         .post('/api/blogs')
+        .set('Authorization', loggedInUserToken)
         .send(newBlog)
         .expect(400)
     })
@@ -115,6 +150,8 @@ describe('when there is initially some blogs saved', () => {
 
       await api
         .delete(`/api/blogs/${blogToDelete.id}`)
+        .set('Accept', 'application/json')
+        .set('Authorization', loggedInUserToken)
         .expect(204)
 
       const blogsAtEnd = await helper.blogsInDb()
@@ -136,6 +173,7 @@ describe('when there is initially some blogs saved', () => {
 
       const response = await api
         .put(`/api/blogs/${initialId}`,updateBlog)
+        .set('Authorization', loggedInUserToken)
         .send(updateBlog)
         .expect(200)
         .expect('Content-Type', /application\/json/)
@@ -152,6 +190,7 @@ describe('when there is initially some blogs saved', () => {
 
       await api
         .put(`/api/blogs/${initialId}`,updateBlog)
+        .set('Authorization', loggedInUserToken)
         .send(updateBlog)
         .expect(403)
     })
@@ -165,6 +204,7 @@ describe('when there is initially some blogs saved', () => {
 
       await api
         .put(`/api/blogs/${initialId}`,updateBlog)
+        .set('Authorization', loggedInUserToken)
         .send(updateBlog)
         .expect(403)
     })
@@ -178,6 +218,7 @@ describe('when there is initially some blogs saved', () => {
 
       const response = await api
         .put(`/api/blogs/${initialId}`,updateBlog)
+        .set('Authorization', loggedInUserToken)
         .send(updateBlog)
         .expect(200).expect('Content-Type', /application\/json/)
 
@@ -193,6 +234,7 @@ describe('when there is initially some blogs saved', () => {
 
       await api
         .put(`/api/blogs/${initialId}`,updateBlog)
+        .set('Authorization', loggedInUserToken)
         .send(updateBlog)
         .expect(403)
     })
