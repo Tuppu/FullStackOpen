@@ -65,7 +65,7 @@ const App = () => {
   const createNewBlog = async (event) => {
     event.preventDefault()
 
-    //blogFormRef.current.hideVisibility();
+    blogFormRef.current.hideVisibility();
 
     const blogObject = {
       title: newTitle,
@@ -139,7 +139,7 @@ const App = () => {
       <h1>blogs</h1>
         <Notification message={successMessage ?? errorMessage} type={successMessage ? 'success' : 'error'} />
         <p>{user.name} logged in <button onClick={() => logUserOut()}>logout</button></p>
-        {/*<Toggleable buttonLabel='new blog' ref={blogFormRef}*/}
+        <Toggleable buttonLabel='new blog' ref={blogFormRef}>
           <h1>create new</h1>
           <form onSubmit={createNewBlog}>
             <div>
@@ -155,7 +155,7 @@ const App = () => {
               <button type="submit">create</button>
             </div>
           </form>
-        {/*</Toggleable>*/}
+        </Toggleable>
       {blogs.map(blog =>
       <Blog key={blog.id} blog={blog} />
       )}
