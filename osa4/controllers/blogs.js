@@ -13,8 +13,11 @@ blogRouter.post('/', userExtractor, async (request, response) => {
 
   const { title, author, url, likes } = request.body
 
-  if (!title || !url) {
-    return response.status(400).end()
+  if (!title) {
+    return response.status(400).json({ error: 'missing title' })
+  }
+  if (!url) {
+    return response.status(400).json({ error: 'missing url' })
   }
 
   const user = request.user
