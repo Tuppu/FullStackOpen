@@ -9,8 +9,8 @@ import loginService from './services/login'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState('') 
-  const [password, setPassword] = useState('') 
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
   const [successMessage, setSuccessMessage] = useState(null)
@@ -21,10 +21,10 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs => {
       const orderedBlogs = blogs.sort((a, b) => parseInt(b.likes) - parseInt(a.likes))
-      
+
       setBlogs( orderedBlogs )
     }
-    )  
+    )
   }, [])
 
   useEffect(() => {
@@ -44,18 +44,18 @@ const App = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault()
-    
+
     try {
       const user = await loginService.login({
         username, password
       })
-      
+
       window.localStorage.setItem(
         'loggedBlogappUser', JSON.stringify(user)
-      ) 
+      )
       setUser(user)
       setUsername('')
-      setPassword('')      
+      setPassword('')
     } catch (exception) {
       setErrorMessage(exception?.response?.data?.error)
       setTimeout(() => {
@@ -73,11 +73,11 @@ const App = () => {
     try {
       const returnedBlog = await blogService.create(blogObject)
       setBlogs(blogs.concat(returnedBlog))
-      blogFormRef.current.hideVisibility();
+      blogFormRef.current.hideVisibility()
       setSuccessMessage(`a new blog ${returnedBlog.title} by ${returnedBlog.author} added`)
       setTimeout(() => {
         setSuccessMessage(null)
-      }, 5000) 
+      }, 5000)
     } catch (exception) {
       setErrorMessage(exception?.response?.data?.error ?? exception?.response?.data?.message)
       setTimeout(() => {
@@ -88,17 +88,17 @@ const App = () => {
 
   const deleteBlog = async (id) => {
     try {
-      const deletingBlog = await blogs.find((blog) => blog.id === id);
+      const deletingBlog = await blogs.find((blog) => blog.id === id)
 
       if (!window.confirm(`Delete ${deletingBlog.title}`)) {
-        return;
+        return
       }
-      await blogService.remove(deletingBlog.id)  
+      await blogService.remove(deletingBlog.id)
       await getAllBlogs()
       setSuccessMessage(`a blog ${deletingBlog.title} by ${deletingBlog.author} removed`)
       setTimeout(() => {
         setSuccessMessage(null)
-      }, 5000) 
+      }, 5000)
     } catch (exception) {
       setErrorMessage(exception?.response?.data?.error ?? exception?.response?.data?.message)
       setTimeout(() => {
@@ -109,9 +109,9 @@ const App = () => {
 
   const likeBlog = async (id) => {
     try {
-      const likedBlog = blogs.find((blog) => blog.id === id);
+      const likedBlog = blogs.find((blog) => blog.id === id)
       const updatedBlog = { ...likedBlog, user: likedBlog?.user?.id, likes: parseInt(likedBlog.likes) + 1 }
-      await blogService.update(updatedBlog, likedBlog.id)  
+      await blogService.update(updatedBlog, likedBlog.id)
       getAllBlogs()
     } catch (exception) {
       setErrorMessage(exception?.response?.data?.error)
@@ -152,15 +152,15 @@ const App = () => {
   return (
     <div>
       <h1>blogs</h1>
-        <Notification message={successMessage ?? errorMessage} type={successMessage ? 'success' : 'error'} />
-        <p>{user.name} logged in <button onClick={() => logUserOut()}>logout</button></p>
-        <Toggleable buttonLabel='new blog' ref={blogFormRef}>
-          <BlogForm
-            createNewBlog={createNewBlog}
-          />
-        </Toggleable>
+      <Notification message={successMessage ?? errorMessage} type={successMessage ? 'success' : 'error'} />
+      <p>{user.name} logged in <button onClick={() => logUserOut()}>logout</button></p>
+      <Toggleable buttonLabel='new blog' ref={blogFormRef}>
+        <BlogForm
+          createNewBlog={createNewBlog}
+        />
+      </Toggleable>
       {blogs.map(blog =>
-      <Blog key={blog.id} blog={blog} setErrorMessage={setErrorMessage} deleteBlog={() => deleteBlog(blog.id)} likeBlog={() => likeBlog(blog.id)} user={user} />
+        <Blog key={blog.id} blog={blog} setErrorMessage={setErrorMessage} deleteBlog={() => deleteBlog(blog.id)} likeBlog={() => likeBlog(blog.id)} user={user} />
       )}
     </div>
   )

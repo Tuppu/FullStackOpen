@@ -12,21 +12,21 @@ const Blog = ({ blog, deleteBlog, likeBlog, user }) => {
   const [visible, setVisible] = useState(false)
 
   const Visibility = { display: visible ? '' : 'none' }
-  const DeleteVisibility = { display: (!blog.user || user?.name == blog?.user?.name) ? '' : 'none' }
+  const DeleteVisibility = { display: (!blog.user || user?.name === blog?.user?.name) ? '' : 'none' }
 
   const toggleVisibility = () => {
     setVisible(!visible)
   }
-  
+
   return(
-  <div style={blogStyle}>
-    <div>{blog.title} {blog.author} <button onClick={toggleVisibility}>{visible ? 'hide' : 'view'}</button></div>
-    <div style={Visibility}>
-      <div>{blog.url}</div>
-      <div>{blog.likes} <button onClick={likeBlog}>like</button></div>
-      <div>{blog?.user?.name}</div>
-      <div><button onClick={deleteBlog} style={DeleteVisibility}>remove</button></div>
+    <div style={blogStyle}>
+      <div>{blog.title} {blog.author} <button onClick={toggleVisibility}>{visible ? 'hide' : 'view'}</button></div>
+      <div style={Visibility}>
+        <div>{blog.url}</div>
+        <div>{blog.likes} <button onClick={likeBlog}>like</button></div>
+        <div>{blog?.user?.name}</div>
+        <div><button onClick={deleteBlog} style={DeleteVisibility}>remove</button></div>
+      </div>
     </div>
-  </div>  
-)}
+  )}
 export default Blog
