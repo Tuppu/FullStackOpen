@@ -26,9 +26,8 @@ const Blog = ({ blog, setErrorMessage }) => {
   const likeBlog = async () => {
     try {
       const updatedBlog = { ..._blog, user: _blog?.user?.id, likes: parseInt(_blog.likes) + 1 }
-      const returnedBlog = await blogService.update(updatedBlog, _blog.id)
-      setBlog(returnedBlog)    
-      //setBlog({ ..._blog, likes: returnedBlog.likes })    
+      const returnedBlog = await blogService.update(updatedBlog, _blog.id)  
+      setBlog({ ..._blog, likes: returnedBlog.likes })    
     } catch (exception) {
       setErrorMessage(exception?.response?.data?.error)
       setTimeout(() => {
