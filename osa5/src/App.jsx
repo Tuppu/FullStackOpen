@@ -36,6 +36,12 @@ const App = () => {
     }
   }, [])
 
+  const getAllBlogs = async () => {
+    const updatedBlogs = await blogService.getAll()
+    const orderedBlogs = updatedBlogs.sort((a, b) => parseInt(b.likes) - parseInt(a.likes))
+    setBlogs(orderedBlogs)
+  }
+
   const handleLogin = async (event) => {
     event.preventDefault()
     
@@ -72,6 +78,41 @@ const App = () => {
       setTimeout(() => {
         setSuccessMessage(null)
       }, 5000) 
+    } catch (exception) {
+      setErrorMessage(exception?.response?.data?.error ?? exception?.response?.data?.message)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
+  }
+
+  const deleteBlog = async (id) => {
+    try {
+      const deletingBlog = await blogs.find((blog) => blog.id === id);
+
+      if (!window.confirm(`Delete ${deletingBlog.title}`)) {
+        return;
+      }
+      await blogService.remove(deletingBlog.id)  
+      await getAllBlogs()
+      setSuccessMessage(`a blog ${deletingBlog.title} by ${deletingBlog.author} removed`)
+      setTimeout(() => {
+        setSuccessMessage(null)
+      }, 5000) 
+    } catch (exception) {
+      setErrorMessage(exception?.response?.data?.error ?? exception?.response?.data?.message)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
+  }
+
+  const likeBlog = async (id) => {
+    try {
+      const likedBlog = blogs.find((blog) => blog.id === id);
+      const updatedBlog = { ...likedBlog, user: likedBlog?.user?.id, likes: parseInt(likedBlog.likes) + 1 }
+      await blogService.update(updatedBlog, likedBlog.id)  
+      getAllBlogs()
     } catch (exception) {
       setErrorMessage(exception?.response?.data?.error)
       setTimeout(() => {
@@ -119,7 +160,7 @@ const App = () => {
           />
         </Toggleable>
       {blogs.map(blog =>
-      <Blog key={blog.id} blog={blog} setErrorMessage={setErrorMessage} />
+      <Blog key={blog.id} blog={blog} setErrorMessage={setErrorMessage} deleteBlog={() => deleteBlog(blog.id)} likeBlog={() => likeBlog(blog.id)} user={user} />
       )}
     </div>
   )
