@@ -13,5 +13,42 @@ test('renders content', () => {
   render(<Blog blog={blog} />)
 
   const element = screen.getByText('testTitle testAuthor')
+  
   expect(element).toBeDefined()
 })
+
+test('renders after view button clicked', async () => {
+    const blog = {
+      'title': 'testTitle',
+      'author': 'testAuthor',
+      'url': 'https://www.test.fi',
+      'likes': 123,
+      'user': {
+        'name': 'Tuomas Liikala',
+      },
+    }
+      
+    const { container } = render(<Blog blog={blog} />)
+  
+    screen.debug()
+    const divBlogDetails = container.querySelector('.blogDetails')
+    expect(divBlogDetails).toHaveStyle('display: none')
+  
+    const user = userEvent.setup()
+    const button = screen.getByText('view')
+    await user.click(button)
+
+    expect(divBlogDetails).not.toHaveStyle('display: none')
+  
+    const element = screen.getByText('testTitle testAuthor')
+    expect(element).toBeDefined()
+    
+    const element2 = screen.getByText('https://www.test.fi')
+    expect(element2).toBeDefined()
+
+    const div = container.querySelector('.blogLikes')
+    expect(div).toHaveTextContent('123')
+
+    const div2 = container.querySelector('.blogUserName')
+    expect(div2).toHaveTextContent('Tuomas Liikala')
+  })
