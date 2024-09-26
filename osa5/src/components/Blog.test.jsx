@@ -17,7 +17,7 @@ test('renders content', () => {
   expect(element).toBeDefined()
 })
 
-test('renders after view button clicked', async () => {
+test('after view button clicked', async () => {
     const blog = {
       'title': 'testTitle',
       'author': 'testAuthor',
@@ -27,9 +27,9 @@ test('renders after view button clicked', async () => {
         'name': 'Tuomas Liikala',
       },
     }
-      
+
     const { container } = render(<Blog blog={blog} />)
-  
+
     screen.debug()
     const divBlogDetails = container.querySelector('.blogDetails')
     expect(divBlogDetails).toHaveStyle('display: none')
@@ -51,4 +51,29 @@ test('renders after view button clicked', async () => {
 
     const div2 = container.querySelector('.blogUserName')
     expect(div2).toHaveTextContent('Tuomas Liikala')
-  })
+})
+
+test('after like button clicked twice', async () => {
+    const blog = {
+      'title': 'testTitle',
+      'author': 'testAuthor',
+      'url': 'https://www.test.fi',
+      'likes': 123,
+      'user': {
+        'name': 'Tuomas Liikala',
+      },
+    }
+
+    const mockHandler = vi.fn()
+
+    render(<Blog blog={blog} likeBlog={mockHandler} />)
+    
+    screen.debug()
+
+    const user = userEvent.setup()
+    const button = screen.getByText('like')
+    await user.click(button)
+    await user.click(button)
+
+    expect(mockHandler.mock.calls).toHaveLength(2)
+})
