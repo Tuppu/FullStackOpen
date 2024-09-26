@@ -30,7 +30,6 @@ test('after view button clicked', async () => {
 
     const { container } = render(<Blog blog={blog} />)
 
-    screen.debug()
     const divBlogDetails = container.querySelector('.blogDetails')
     expect(divBlogDetails).toHaveStyle('display: none')
   
@@ -67,8 +66,6 @@ test('after like button clicked twice', async () => {
     const mockHandler = vi.fn()
 
     render(<Blog blog={blog} likeBlog={mockHandler} />)
-    
-    screen.debug()
 
     const user = userEvent.setup()
     const button = screen.getByText('like')
