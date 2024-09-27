@@ -1,5 +1,3 @@
-import PropTypes from 'prop-types'
-
 const Notification = ({ message, type }) => {
   if (message === null) {
     return null
@@ -23,9 +21,5 @@ const Notification = ({ message, type }) => {
 }
 
 Notification.displayName = 'Toggleable'
-
-Notification.propTypes = {
-  message: PropTypes.string.isRequired
-}
 
 export default Notification
