@@ -33,7 +33,7 @@ const App = () => {
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
-      blogService.token = `Bearer ${user.token}`
+      blogService.setToken(user.token)
     }
   }, [])
 
@@ -54,7 +54,6 @@ const App = () => {
       window.localStorage.setItem(
         'loggedBlogappUser', JSON.stringify(user)
       )
-      console.log(user, 'storage')
       setUser(user)
       setUsername('')
       setPassword('')

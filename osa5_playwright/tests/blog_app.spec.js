@@ -46,8 +46,21 @@ describe('Blog app', () => {
 
             const successDiv = await page.locator('.success')
             await expect(successDiv).toContainText('a new blog a blog created by playwright by playwright added')
-
             await expect(page.getByText('a blog created by playwright playwright')).toBeVisible()
+        })
+
+        test('a new blog can be liked', async ({ page }) => {
+            await createBlog(page, 'a blog created by playwright', 'playwright', 'https://playwright.dev/')
+
+            const successDiv = await page.locator('.success')
+            await expect(successDiv).toContainText('a new blog a blog created by playwright by playwright added')
+            await expect(page.getByText('a blog created by playwright playwright')).toBeVisible()
+
+            await page.getByRole('button', { name: 'view' }).click()
+            await page.getByRole('button', { name: 'like' }).click()
+
+            const likeDiv = await page.locator('.blogLikes')
+            await expect(likeDiv).toContainText('1')
         })
     })  
 })
