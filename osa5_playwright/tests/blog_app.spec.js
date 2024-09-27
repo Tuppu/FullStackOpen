@@ -1,9 +1,10 @@
 const { test, expect, describe, beforeEach } = require('@playwright/test')
+const { loginWith, createBlog } = require('./helper')
 
 describe('Blog app', () => {
     beforeEach(async ({ page, request }) => {
-        await request.post('http:localhost:3003/api/testing/reset')
-        await request.post('http://localhost:3003/api/users', {
+        await request.post('/api/testing/reset')
+        await request.post('/api/users', {
           data: {
             name: 'Tuomas Liikala',
             username: 'tuppu',
@@ -11,7 +12,7 @@ describe('Blog app', () => {
           }
         })
 
-        await page.goto('http://localhost:5173')
+        await page.goto('/')
       })
 
     test('Login form is shown', async ({ page }) => {
@@ -22,21 +23,31 @@ describe('Blog app', () => {
 
     describe('Login', () => {
         test('succeeds with correct credentials', async ({ page }) => {
-            await page.getByRole('button', { name: 'log in' }).click()
-            await page.getByTestId('username').fill('tuppu')
-            await page.getByTestId('password').fill('salsasalsa')
-            await page.getByRole('button', { name: 'login' }).click()
+            await loginWith(page, 'tuppu', 'salsasalsa')
         
             await expect(page.getByText('Tuomas Liikala logged in')).toBeVisible()
         })
 
-        test('fails with wrong credentials', async ({ page }) => {
-            await page.getByRole('button', { name: 'log in' }).click()
-            await page.getByTestId('username').fill('wrongUser')
-            await page.getByTestId('password').fill('wrongPw')
-            await page.getByRole('button', { name: 'login' }).click()
+        test('fails with uncorrect credentials', async ({ page }) => {
+            await loginWith(page, 'wrongUser', 'wrongPw')
         
-            await expect(page.getByText('invalid username or password')).toBeVisible()
+            const errorDiv = await page.locator('.error')
+            await expect(errorDiv).toContainText('invalid username or password')
+            await expect(page.getByText('Tuomas Liikala logged in')).not.toBeVisible()
         })
     })
+    describe('when logged in', () => {
+        beforeEach(async ({ page }) => {
+            await loginWith(page, 'tuppu', 'salsasalsa')
+        })
+    
+        test('a new blog can be created', async ({ page }) => {
+            await createBlog(page, 'a blog created by playwright', 'playwright', 'https://playwright.dev/')
+
+            const successDiv = await page.locator('.success')
+            await expect(successDiv).toContainText('a new blog a blog created by playwright by playwright added')
+
+            await expect(page.getByText('a blog created by playwright playwright')).toBeVisible()
+        })
+    })  
 })

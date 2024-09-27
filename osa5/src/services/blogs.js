@@ -7,14 +7,29 @@ const setToken = newToken => {
   token = `Bearer ${newToken}`
 }
 
+const getToken = () => {
+  if (!token) {
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
+    const user = JSON.parse(loggedUserJSON)
+    setToken(user.token)
+  }
+  return token
+}
+
 const getAll = async () => {
   const request = await axios.get(baseUrl)
   return request.data
 }
 
 const create = async newObject => {
+
+  const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
+  if (loggedUserJSON) {
+    const user = JSON.parse(loggedUserJSON)
+    setToken(user.token)
+  }
   const config = {
-    headers: { Authorization: token },
+    headers: { Authorization: getToken() },
   }
 
   const request = await axios.post(baseUrl, newObject, config)
@@ -23,7 +38,7 @@ const create = async newObject => {
 
 const update = async (updateObject, id) => {
   const config = {
-    headers: { Authorization: token },
+    headers: { Authorization: getToken() },
   }
 
   const request = await axios.put(`${baseUrl}/${id}`, updateObject, config)
@@ -32,7 +47,7 @@ const update = async (updateObject, id) => {
 
 const remove = async (id) => {
   const config = {
-    headers: { Authorization: token },
+    headers: { Authorization: getToken() },
   }
 
   const request = await axios.delete(`${baseUrl}/${id}`, config)
