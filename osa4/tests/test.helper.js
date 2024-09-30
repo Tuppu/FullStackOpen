@@ -4,6 +4,18 @@ const User = require('../models/user')
 const initialBlogs = [
   {
     'title': 'eka',
+    'author': 'YLE',
+    'url': 'https://www.yle.fi',
+    'likes': 1,
+    'user': {
+      'username': 'tuppu',
+      'name': 'Tuomas Liikala',
+      '_id': '66ed2ae0813500c9bb343ed7'
+    },
+    '_id': '66e96b86e77085528c3db195'
+  },
+  {
+    'title': 'toka',
     'author': 'Tuomas Liikala',
     'url': 'https://www.tuppu.fi',
     'likes': 100,
@@ -14,18 +26,6 @@ const initialBlogs = [
     },
     '_id': '66e96b86e77085528c3db190'
   },
-  {
-    'title': 'toka',
-    'author': 'YLE',
-    'url': 'https://www.yle.fi',
-    'likes': 1,
-    'user': {
-      'username': 'tuppu',
-      'name': 'Tuomas Liikala',
-      '_id': '66ed2ae0813500c9bb343ed7'
-    },
-    '_id': '66e96b86e77085528c3db195'
-  }
 ]
 
 const nonExistingId = async () => {

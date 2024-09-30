@@ -21,7 +21,7 @@ describe('Blog app', () => {
           })
 
         await page.goto('/')
-      })
+    })
 
     test('Login form is shown', async ({ page }) => {
         const locator = await page.getByText('Blogs')
@@ -127,5 +127,36 @@ describe('Blog app', () => {
             
             await expect(page.getByText('remove')).not.toBeVisible()
         })
-    })  
+    })
 })
+
+describe('Many blogs', () => {
+    beforeEach(async ({ page, request }) => {
+        await request.post('/api/testing/reset2')
+        await request.post('/api/users', {
+            data: {
+              name: 'Tuomas Liikala',
+              username: 'tuppu',
+              password: 'salsasalsa'
+            }
+          })
+        await page.goto('/')
+    })
+
+    test('sorting the blogs by likes', async ({ page }) => {
+
+        await loginWith(page, 'tuppu', 'salsasalsa')
+        await expect(page.getByText('Tuomas Liikala logged in')).toBeVisible()
+        await createBlog(page, 'a blog created by playwright', 'playwright', 'https://playwright.dev/')
+
+        const successDiv = await page.locator('.success')
+        await expect(successDiv).toContainText('a new blog a blog created by playwright by playwright added')
+        await expect(page.getByText('a blog created by playwright playwright')).toBeVisible()
+
+        const views = await page.getByRole('button', { name: 'view' }).all()
+        views[0].click()
+        
+        const blogDiv = await page.locator('.blog').first()
+        await expect(blogDiv).toContainText('toka Tuomas Liikala ')
+    })
+})  
