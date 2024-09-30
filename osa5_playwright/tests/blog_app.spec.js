@@ -1,5 +1,5 @@
 const { test, expect, describe, beforeEach } = require('@playwright/test')
-const { loginWith, createBlog, confirmer } = require('./helper')
+const { loginWith, createBlog } = require('./helper')
 
 describe('Blog app', () => {
     beforeEach(async ({ page, request }) => {
@@ -11,6 +11,14 @@ describe('Blog app', () => {
             password: 'salsasalsa'
           }
         })
+
+        await request.post('/api/users', {
+            data: {
+              name: 'Another User',
+              username: 'anotherUser',
+              password: 'salsasalsa'
+            }
+          })
 
         await page.goto('/')
       })
@@ -71,7 +79,6 @@ describe('Blog app', () => {
             await expect(page.getByText('a blog created by playwright playwright')).toBeVisible()
 
             await page.getByRole('button', { name: 'view' }).click()
-            await page.getByRole('button', { name: 'like' }).click()
 
             await page.on("dialog", async (dialogWindow) => {
                 console.log(dialogWindow.message())
@@ -80,9 +87,45 @@ describe('Blog app', () => {
         
                 await dialogWindow.accept()
             })
+            await expect(page.getByText('like')).toBeVisible()
+            await page.getByRole('button', { name: 'like' }).click()
+            await expect(page.getByText('remove')).toBeVisible()
             await page.getByRole('button', { name: 'remove' }).click()
 
             await expect(page.getByText('a blog a blog created by playwright by playwright removed')).toBeVisible()
+        })
+
+        test('a blog can be deleted just by the person who added it', async ({ page }) => {
+            await createBlog(page, 'a blog created by playwright', 'playwright', 'https://playwright.dev/', true)
+
+            const successDiv = await page.locator('.success')
+            await expect(successDiv).toContainText('a new blog a blog created by playwright by playwright added')
+            await expect(page.getByText('a blog created by playwright playwright')).toBeVisible()
+
+            await page.getByRole('button', { name: 'view' }).click()
+
+            await page.on("dialog", async (dialogWindow) => {
+                console.log(dialogWindow.message())
+                expect(dialogWindow.type()).toContain("confirm")
+                expect(dialogWindow.message()).toContain("Delete a blog created by playwright")
+        
+                await dialogWindow.accept()
+            })
+
+
+            await expect(page.getByText('logout')).toBeVisible()
+            await page.getByRole('button', { name: 'logout' }).click()
+            await page.getByRole('button', { name: 'cancel' }).click()
+
+            await loginWith(page, 'anotherUser', 'salsasalsa')
+
+            await page.getByRole('button', { name: 'view' }).click()
+            await expect(page.getByText('like')).toBeVisible()
+            await page.getByRole('button', { name: 'like' }).click()
+            const likeDiv = await page.locator('.blogLikes').first()
+            await expect(likeDiv).toContainText('1')
+            
+            await expect(page.getByText('remove')).not.toBeVisible()
         })
     })  
 })

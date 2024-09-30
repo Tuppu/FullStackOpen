@@ -15,20 +15,5 @@ const createBlog = async (page, title, author, url) => {
     await page.getByRole('button', { name: 'create' }).click()
   }
 
-const confirmer = async (page) => {
-    
-            
-    console.log('hello');
 
-    await page.on("dialog", async (dialogWindow) => {
-        console.log(dialogWindow.message())
-        expect(dialogWindow.type()).toContain("confirm")
-        expect(dialogWindow.message()).toContain("Delete a blog created by playwright")
-
-        await dialogWindow.accept()
-    })
-
-    await page.getByRole('button', { name: 'remove' }).click()
-  }
-
-export { loginWith, createBlog, confirmer }
+export { loginWith, createBlog }
