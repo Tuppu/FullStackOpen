@@ -5,7 +5,7 @@ const AnecodoteList = () => {
     
     const dispatch = useDispatch()
     const anecdotes = useSelector(state => {
-        const filteredState = state.anecdotes.filter(a => a.content.includes(state.filter))
+        const filteredState = state.anecdotes.filter(a => a.content.includes(state.filter.payload))
         return filteredState.sort((a, b) => b.votes - a.votes)
     })
     
