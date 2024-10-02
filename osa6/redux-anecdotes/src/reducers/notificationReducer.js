@@ -1,16 +1,28 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-const initialState = 'initial Message'
+const initialState = ''
   
   const filterSlice = createSlice({
-    name: 'filter',
+    name: 'notification',
     initialState,
     reducers: {
-      notificationReducer(state, action) {
-        return initialState;
+      notificationReducer(state) {
+        return state;
+      },
+      showNotification(state, action) {
+        switch (action.type) {
+            case 'notification/showNotification':
+              return action.payload
+          }
+      },
+      hideNotification(state, action) {
+        switch (action.type) {
+            case 'notification/hideNotification':
+              return initialState
+          }
       }
     }
   })
 
-export const { notificationReducer } = filterSlice.actions
+export const { notificationReducer, showNotification, hideNotification } = filterSlice.actions
 export default filterSlice.reducer
