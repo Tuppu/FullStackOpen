@@ -25,4 +25,14 @@ const initialState = ''
   })
 
 export const { notificationReducer, showNotification, hideNotification } = filterSlice.actions
+
+export const setNotification = (message, showSeconds) => {
+  return async dispatch => {
+    dispatch(showNotification((`${message}`)))
+    setTimeout(() => {
+        dispatch(hideNotification())
+    }, showSeconds * 1000)
+  }
+}
+
 export default filterSlice.reducer
