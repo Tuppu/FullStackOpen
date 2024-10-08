@@ -75,6 +75,7 @@ const CreateNew = (props) => {
   const [created, setCreated] = useState(false)
 
   const handleSubmit = (e) => {
+    console.log(e)
     e.preventDefault()
     props.addNew({
       content: content.value,
@@ -83,6 +84,12 @@ const CreateNew = (props) => {
       votes: 0
     })
     setCreated(true)
+  }
+
+  const handleReset = () => {
+    content.reset()
+    author.reset()
+    info.reset()
   }
 
   return (
@@ -104,7 +111,8 @@ const CreateNew = (props) => {
           url for more info
           <input {...info} />
         </div>
-        <button>create</button>
+        <button type="submit">create</button>
+        <button type="reset" onClick={handleReset}>reset</button>
       </form>
     </div>
   )
