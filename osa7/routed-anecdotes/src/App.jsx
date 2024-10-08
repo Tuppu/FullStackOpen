@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, reset } from 'react'
 import { useField } from './hooks'
 
 import {
@@ -72,10 +72,9 @@ const CreateNew = (props) => {
   const author = useField('content')
   const info = useField('content')
 
-  const [created, setCreated] = useState(false)
+  const [redirect, setRedirect] = useState('')
 
   const handleSubmit = (e) => {
-    console.log(e)
     e.preventDefault()
     props.addNew({
       content: content.value,
@@ -83,20 +82,21 @@ const CreateNew = (props) => {
       info: author.value,
       votes: 0
     })
-    setCreated(true)
+    setRedirect('/')
   }
 
   const handleReset = () => {
-    content.reset()
-    author.reset()
-    info.reset()
+    const customEvent = {target: {value: ''}}
+    content.onChange(customEvent)
+    author.onChange(customEvent)
+    info.onChange(customEvent)
   }
 
   return (
     <div>
       <h2>create a new anecdote</h2>
-      {created && (
-          <Navigate to="/" replace={true} />
+      {redirect && (
+          <Navigate to={redirect} replace={true} />
         )}
       <form onSubmit={handleSubmit}>
         <div>
