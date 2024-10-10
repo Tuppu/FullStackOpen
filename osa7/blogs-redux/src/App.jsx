@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { useDispatch } from 'react-redux'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
 import Footer from './components/Footer'
@@ -7,14 +8,15 @@ import Toggleable from './components/Toggleable'
 import BlogForm from './components/BlogForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import { setNotification } from './reducers/notificationReducer'
 
 const App = () => {
+  const dispatch = useDispatch()
+
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [errorMessage, setErrorMessage] = useState(null)
-  const [successMessage, setSuccessMessage] = useState(null)
   const [loginVisible, setLoginVisible] = useState(false)
 
   const blogFormRef = useRef()
@@ -60,10 +62,7 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      setErrorMessage(exception?.response?.data?.error)
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+      dispatch(setNotification(exception?.response?.data?.error, 'error', 5))
     }
   }
 
@@ -77,19 +76,22 @@ const App = () => {
       const returnedBlog = await blogService.create(blogObject)
       setBlogs(blogs.concat(returnedBlog))
       blogFormRef.current.hideVisibility()
-      setSuccessMessage(
-        `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`,
+      dispatch(
+        setNotification(
+          `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`,
+          'success',
+          5,
+        ),
       )
-      setTimeout(() => {
-        setSuccessMessage(null)
-      }, 5000)
     } catch (exception) {
-      setErrorMessage(
-        exception?.response?.data?.error ?? exception?.response?.data?.message,
+      dispatch(
+        setNotification(
+          exception?.response?.data?.error ??
+            exception?.response?.data?.message,
+          'error',
+          5,
+        ),
       )
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
     }
   }
 
@@ -102,19 +104,23 @@ const App = () => {
       }
       await blogService.remove(deletingBlog.id)
       await getAllBlogs()
-      setSuccessMessage(
-        `a blog ${deletingBlog.title} by ${deletingBlog.author} removed`,
+
+      dispatch(
+        setNotification(
+          `a blog ${deletingBlog.title} by ${deletingBlog.author} removed`,
+          'error',
+          5,
+        ),
       )
-      setTimeout(() => {
-        setSuccessMessage(null)
-      }, 5000)
     } catch (exception) {
-      setErrorMessage(
-        exception?.response?.data?.error ?? exception?.response?.data?.message,
+      dispatch(
+        setNotification(
+          exception?.response?.data?.error ??
+            exception?.response?.data?.message,
+          'error',
+          5,
+        ),
       )
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
     }
   }
 
@@ -128,11 +134,9 @@ const App = () => {
       }
       await blogService.update(updatedBlog, likedBlog.id)
       getAllBlogs()
+      dispatch(setNotification(`likes ${updatedBlog.title}`, 'success', 5))
     } catch (exception) {
-      setErrorMessage(exception?.response?.data?.error)
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+      dispatch(setNotification(exception?.response?.data?.error, 'errpr', 5))
     }
   }
 
@@ -143,10 +147,7 @@ const App = () => {
     return (
       <div>
         <h1>Blogs</h1>
-        <Notification
-          message={successMessage ?? errorMessage}
-          type={successMessage ? 'success' : 'error'}
-        />
+        <Notification />
         <div style={hideWhenVisible}>
           <button onClick={() => setLoginVisible(true)}>log in</button>
         </div>
@@ -172,10 +173,7 @@ const App = () => {
   return (
     <div>
       <h1>Blogs</h1>
-      <Notification
-        message={successMessage ?? errorMessage}
-        type={successMessage ? 'success' : 'error'}
-      />
+      <Notification />
       <p>
         {user.name} logged in{' '}
         <button onClick={() => logUserOut()}>logout</button>
@@ -187,7 +185,6 @@ const App = () => {
         <Blog
           key={blog.id}
           blog={blog}
-          setErrorMessage={setErrorMessage}
           deleteBlog={() => deleteBlog(blog.id)}
           likeBlog={() => likeBlog(blog.id)}
           user={user}
