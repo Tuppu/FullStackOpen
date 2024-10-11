@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { useDispatch } from 'react-redux'
-import Blog from './components/Blog'
+import { useDispatch, useSelector } from 'react-redux'
 import Notification from './components/Notification'
 import Footer from './components/Footer'
 import LoginForm from './components/LoginForm'
@@ -9,11 +8,12 @@ import BlogForm from './components/BlogForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import { setNotification } from './reducers/notificationReducer'
+import { updateBlogs } from './reducers/blogsReducer'
+import Blogs from './components/Blogs'
 
 const App = () => {
   const dispatch = useDispatch()
 
-  const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -21,15 +21,13 @@ const App = () => {
 
   const blogFormRef = useRef()
 
-  useEffect(() => {
-    blogService.getAll().then((blogs) => {
-      const orderedBlogs = blogs.sort(
-        (a, b) => parseInt(b.likes) - parseInt(a.likes),
-      )
+  blogService.getAll().then((blogs) => {
+    const orderedBlogs = blogs.sort(
+      (a, b) => parseInt(b.likes) - parseInt(a.likes),
+    )
 
-      setBlogs(orderedBlogs)
-    })
-  }, [])
+    dispatch(updateBlogs(orderedBlogs))
+  })
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -45,7 +43,8 @@ const App = () => {
     const orderedBlogs = updatedBlogs.sort(
       (a, b) => parseInt(b.likes) - parseInt(a.likes),
     )
-    setBlogs(orderedBlogs)
+
+    dispatch(updateBlogs(orderedBlogs))
   }
 
   const handleLogin = async (event) => {
@@ -74,8 +73,10 @@ const App = () => {
   const createNewBlog = async (blogObject) => {
     try {
       const returnedBlog = await blogService.create(blogObject)
-      setBlogs(blogs.concat(returnedBlog))
+
+      getAllBlogs()
       blogFormRef.current.hideVisibility()
+
       dispatch(
         setNotification(
           `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`,
@@ -181,15 +182,7 @@ const App = () => {
       <Toggleable buttonLabel="new blog" ref={blogFormRef}>
         <BlogForm createNewBlog={createNewBlog} />
       </Toggleable>
-      {blogs.map((blog) => (
-        <Blog
-          key={blog.id}
-          blog={blog}
-          deleteBlog={() => deleteBlog(blog.id)}
-          likeBlog={() => likeBlog(blog.id)}
-          user={user}
-        />
-      ))}
+      <Blogs />
       <Footer />
     </div>
   )
