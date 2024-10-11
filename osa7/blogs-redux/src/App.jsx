@@ -96,51 +96,6 @@ const App = () => {
     }
   }
 
-  const deleteBlog = async (id) => {
-    try {
-      const deletingBlog = await blogs.find((blog) => blog.id === id)
-
-      if (!window.confirm(`Delete ${deletingBlog.title}`)) {
-        return
-      }
-      await blogService.remove(deletingBlog.id)
-      await getAllBlogs()
-
-      dispatch(
-        setNotification(
-          `a blog ${deletingBlog.title} by ${deletingBlog.author} removed`,
-          'error',
-          5,
-        ),
-      )
-    } catch (exception) {
-      dispatch(
-        setNotification(
-          exception?.response?.data?.error ??
-            exception?.response?.data?.message,
-          'error',
-          5,
-        ),
-      )
-    }
-  }
-
-  const likeBlog = async (id) => {
-    try {
-      const likedBlog = blogs.find((blog) => blog.id === id)
-      const updatedBlog = {
-        ...likedBlog,
-        user: likedBlog?.user?.id,
-        likes: parseInt(likedBlog.likes) + 1,
-      }
-      await blogService.update(updatedBlog, likedBlog.id)
-      getAllBlogs()
-      dispatch(setNotification(`likes ${updatedBlog.title}`, 'success', 5))
-    } catch (exception) {
-      dispatch(setNotification(exception?.response?.data?.error, 'errpr', 5))
-    }
-  }
-
   const loginForm = () => {
     const hideWhenVisible = { display: loginVisible ? 'none' : '' }
     const showWhenVisible = { display: loginVisible ? '' : 'none' }
@@ -182,7 +137,7 @@ const App = () => {
       <Toggleable buttonLabel="new blog" ref={blogFormRef}>
         <BlogForm createNewBlog={createNewBlog} />
       </Toggleable>
-      <Blogs />
+      <Blogs user={user} />
       <Footer />
     </div>
   )
