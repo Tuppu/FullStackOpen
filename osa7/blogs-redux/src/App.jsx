@@ -11,8 +11,13 @@ import { setNotification } from './reducers/notificationReducer'
 import { updateBlogs } from './reducers/blogsReducer'
 import { updateUser } from './reducers/userReducer'
 import Blogs from './components/Blogs'
+import Users from './components/Users'
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 
 const App = () => {
+  const padding = {
+    padding: 5,
+  }
   const dispatch = useDispatch()
 
   const [username, setUsername] = useState('')
@@ -126,16 +131,41 @@ const App = () => {
 
   return (
     <div>
-      <h1>Blogs</h1>
       <Notification />
-      <p>
-        {user.name} logged in{' '}
-        <button onClick={() => logUserOut()}>logout</button>
-      </p>
-      <Toggleable buttonLabel="new blog" ref={blogFormRef}>
-        <BlogForm createNewBlog={createNewBlog} />
-      </Toggleable>
-      <Blogs user={user} />
+      <Router>
+        <div>
+          <Link style={padding} to="/">
+            home
+          </Link>
+          <Link style={padding} to="/blogs">
+            blogs
+          </Link>
+          <Link style={padding} to="/users">
+            users
+          </Link>
+        </div>
+        <p>{user.name} logged in </p>
+        <p>
+          <button onClick={() => logUserOut()}>logout</button>
+        </p>
+
+        <Routes>
+          <Route
+            path="blogs"
+            element={
+              <div>
+                <h1>Blogs</h1>
+                <Toggleable buttonLabel="new blog" ref={blogFormRef}>
+                  <BlogForm createNewBlog={createNewBlog} />
+                </Toggleable>
+                <Blogs user={user} />
+              </div>
+            }
+          />
+          <Route path="/users" element={<Users />} />
+          <Route path="/" element={<div />} />
+        </Routes>
+      </Router>
       <Footer />
     </div>
   )
