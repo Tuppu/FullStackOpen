@@ -9,6 +9,7 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import { setNotification } from './reducers/notificationReducer'
 import { updateBlogs } from './reducers/blogsReducer'
+import { updateUser } from './reducers/userReducer'
 import Blogs from './components/Blogs'
 
 const App = () => {
@@ -16,7 +17,9 @@ const App = () => {
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
+  const user = useSelector((state) => {
+    return state.user
+  })
   const [loginVisible, setLoginVisible] = useState(false)
 
   const blogFormRef = useRef()
@@ -30,10 +33,7 @@ const App = () => {
   })
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
+    if (user) {
       blogService.setToken(user.token)
     }
   }, [])
@@ -56,8 +56,7 @@ const App = () => {
         password,
       })
 
-      window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
-      setUser(user)
+      dispatch(updateUser(user))
       setUsername('')
       setPassword('')
     } catch (exception) {
@@ -66,8 +65,7 @@ const App = () => {
   }
 
   const logUserOut = () => {
-    window.localStorage.removeItem('loggedBlogappUser')
-    setUser(null)
+    dispatch(updateUser(null))
   }
 
   const createNewBlog = async (blogObject) => {
@@ -122,7 +120,7 @@ const App = () => {
     )
   }
 
-  if (user === null) {
+  if (!user) {
     return loginForm()
   }
 
