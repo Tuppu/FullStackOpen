@@ -1,10 +1,15 @@
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import userService from '../services/users'
 import { updateUsers } from '../reducers/usersReducer'
+import User from './User'
+import { useParams } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 
 const Users = () => {
   const dispatch = useDispatch()
+
+  const id = useParams().id
 
   const users = useSelector((state) => {
     return state.users
@@ -15,6 +20,16 @@ const Users = () => {
       dispatch(updateUsers(users))
     })
   }, [])
+
+  if (!users) {
+    return <div></div>
+  }
+
+  if (id) {
+    const user = users.find((u) => u.id == id)
+
+    return <User user={user} />
+  }
 
   return (
     <div>
@@ -32,7 +47,9 @@ const Users = () => {
         <tbody>
           {users.map((user) => (
             <tr key={user.id}>
-              <td>{user.name}</td>
+              <td>
+                <Link to={`/users/${user.id}`}>{user.name}</Link>
+              </td>
               <td>{user.blogs.length}</td>
             </tr>
           ))}
