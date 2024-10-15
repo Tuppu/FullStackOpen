@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import Notification from './components/Notification'
 import Footer from './components/Footer'
 import LoginFormView from './components/LoginFormView'
-import BlogFormView from './components/BlogFormView'
+import Blogs from './components/Blogs'
 import blogService from './services/blogs'
 import { updateBlogs } from './reducers/blogsReducer'
 import { updateUser } from './reducers/userReducer'
@@ -69,7 +69,8 @@ const App = () => {
           <Route path="/" element={<div />} />
           <Route path="/users" element={<Users />} />
           <Route path="/users/:id" element={<Users />} />
-          <Route path="/blogs" element={<BlogFormView />} />
+          <Route path="/blogs" element={<Blogs user={user} />} />
+          <Route path="/blogs/:id" element={<Blogs user={user} />} />
         </Routes>
       </Router>
       <Footer />
