@@ -3,19 +3,13 @@ import { useDispatch, useSelector } from 'react-redux'
 import Notification from './Notification'
 import Footer from './Footer'
 import LoginForm from './LoginForm'
-import BlogFormView from './BlogFormView'
 import blogService from '../services/blogs'
 import loginService from '../services/login'
 import { setNotification } from '../reducers/notificationReducer'
 import { updateBlogs } from '../reducers/blogsReducer'
 import { updateUser } from '../reducers/userReducer'
-import Users from './Users'
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 
 const LoginFormView = () => {
-  const padding = {
-    padding: 5,
-  }
   const dispatch = useDispatch()
 
   const [username, setUsername] = useState('')

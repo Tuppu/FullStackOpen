@@ -9,9 +9,14 @@ import { setNotification } from '../reducers/notificationReducer'
 import { updateBlogs } from '../reducers/blogsReducer'
 import { useRef } from 'react'
 
-const Blogs = ({ user }) => {
+const Blogs = () => {
   const dispatch = useDispatch()
   const blogFormRef = useRef()
+
+  const user = useSelector((state) => {
+    return state.user
+  })
+
   const blogs = useSelector((state) => {
     return state.blogs
   })
@@ -25,7 +30,7 @@ const Blogs = ({ user }) => {
     const blog = blogs.find((u) => u.id == id)
 
     if (blog) {
-      return <BlogView blog={blog} user={user} />
+      return <BlogView blog={blog} />
     }
   }
 

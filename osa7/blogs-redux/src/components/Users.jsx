@@ -4,7 +4,7 @@ import userService from '../services/users'
 import { updateUsers } from '../reducers/usersReducer'
 import User from './User'
 import { useParams } from 'react-router-dom'
-import { Link } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 
 const Users = () => {
   const dispatch = useDispatch()
@@ -21,13 +21,8 @@ const Users = () => {
     })
   }, [])
 
-  if (!users) {
-    return <div></div>
-  }
-
   if (id) {
-    const user = users.find((u) => u.id == id)
-
+    const user = users.find((u) => u.id === id)
     return <User user={user} />
   }
 

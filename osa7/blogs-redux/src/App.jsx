@@ -4,16 +4,13 @@ import Notification from './components/Notification'
 import Footer from './components/Footer'
 import LoginFormView from './components/LoginFormView'
 import Blogs from './components/Blogs'
+import NavigationMenu from './components/NavigationMenu'
 import blogService from './services/blogs'
 import { updateBlogs } from './reducers/blogsReducer'
-import { updateUser } from './reducers/userReducer'
 import Users from './components/Users'
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 const App = () => {
-  const padding = {
-    padding: 5,
-  }
   const dispatch = useDispatch()
 
   const user = useSelector((state) => {
@@ -34,10 +31,6 @@ const App = () => {
     }
   }, [])
 
-  const logUserOut = () => {
-    dispatch(updateUser(null))
-  }
-
   if (!user) {
     return <LoginFormView />
   }
@@ -46,31 +39,15 @@ const App = () => {
     <div>
       <Notification />
       <Router>
-        <div>
-          <Link style={padding} to="/">
-            home
-          </Link>
-          <Link style={padding} to="/blogs">
-            blogs
-          </Link>
-          <Link style={padding} to="/users">
-            users
-          </Link>
-        </div>
-
-        <h3>Blogs</h3>
-
-        <p>{user.name} logged in </p>
-        <p>
-          <button onClick={() => logUserOut()}>logout</button>
-        </p>
+        <NavigationMenu />
+        <h3>Blogs app</h3>
 
         <Routes>
           <Route path="/" element={<div />} />
           <Route path="/users" element={<Users />} />
           <Route path="/users/:id" element={<Users />} />
-          <Route path="/blogs" element={<Blogs user={user} />} />
-          <Route path="/blogs/:id" element={<Blogs user={user} />} />
+          <Route path="/blogs" element={<Blogs />} />
+          <Route path="/blogs/:id" element={<Blogs />} />
         </Routes>
       </Router>
       <Footer />

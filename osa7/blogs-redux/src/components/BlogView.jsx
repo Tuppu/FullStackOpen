@@ -1,14 +1,18 @@
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import blogService from '../services/blogs'
 import { updateBlogs } from '../reducers/blogsReducer'
 import { setNotification } from '../reducers/notificationReducer'
 
-const BlogView = ({ blog, user }) => {
+const BlogView = ({ blog }) => {
   const dispatch = useDispatch()
 
-  if (!blog || !user) {
+  if (!blog) {
     return <div>Blog not found</div>
   }
+
+  const user = useSelector((state) => {
+    return state.user
+  })
 
   const clickLike = async (likedBlog) => {
     try {
