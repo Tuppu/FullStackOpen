@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import blogService from '../services/blogs'
 import { updateBlogs } from '../reducers/blogsReducer'
 import { setNotification } from '../reducers/notificationReducer'
+import { Link } from 'react-router-dom'
 
 const BlogView = ({ blog }) => {
   const dispatch = useDispatch()
@@ -17,8 +18,6 @@ const BlogView = ({ blog }) => {
   const clickLike = async (likedBlog) => {
     try {
       const updatedBlog = {
-        ...likedBlog,
-        user: likedBlog?.user?.id,
         likes: parseInt(likedBlog.likes) + 1,
       }
 
@@ -27,9 +26,9 @@ const BlogView = ({ blog }) => {
 
       dispatch(updateBlogs(newBlogs))
 
-      dispatch(setNotification(`likes ${updatedBlog.title}`, 'success', 5))
+      dispatch(setNotification(`likes ${likedBlog.title}`, 'success', 5))
     } catch (exception) {
-      dispatch(setNotification(exception?.response?.data?.error, 'errpr', 5))
+      dispatch(setNotification(exception?.response?.data?.error, 'error', 5))
     }
   }
 
@@ -62,11 +61,17 @@ const BlogView = ({ blog }) => {
   return (
     <div>
       <h2>{blog.title}</h2>
-      <div>{blog.url}</div>
+      <Link to={blog.url}>{blog.url}</Link>
       <div className="blogLikes">
-        {blog.likes} <button onClick={() => clickLike(blog)}>like</button>
+        {blog.likes} likes <button onClick={() => clickLike(blog)}>like</button>
       </div>
-      <div className="blogUserName">{blog?.user?.name}</div>
+      <div className="blogUserName">added by {blog?.user?.name}</div>
+      <h3>comments</h3>
+      <ul>
+        {blog.comments.map((comment) => (
+          <li>{comment.text}</li>
+        ))}
+      </ul>
       <div>
         <button onClick={() => clickDelete(blog)} style={DeleteVisibility}>
           remove

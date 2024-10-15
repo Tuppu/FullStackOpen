@@ -1,0 +1,7 @@
+POST http://localhost:3003/api/blogs/670e4f87a916b2cc88503550/comments
+Content-Type: application/json
+Authorization: Bearer xxx
+
+{
+  "text": "best of ever!!"
+}
