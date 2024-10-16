@@ -50,10 +50,6 @@ const LoginFormView = () => {
     }
   }
 
-  const logUserOut = () => {
-    dispatch(updateUser(null))
-  }
-
   const hideWhenVisible = { display: loginVisible ? 'none' : '' }
   const showWhenVisible = { display: loginVisible ? '' : 'none' }
 

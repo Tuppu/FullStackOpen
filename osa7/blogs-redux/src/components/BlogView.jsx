@@ -58,6 +58,21 @@ const BlogView = ({ blog }) => {
     display: !blog.user || user?.name === blog?.user?.name ? '' : 'none',
   }
 
+  const addComment = async (event) => {
+    event.preventDefault()
+
+    const newComment = { text: event.target.comment.value }
+
+    const result = await blogService.createNewCommentbyBlogId(
+      newComment,
+      blog.id,
+    )
+
+    const newBlogs = await blogService.getAll()
+
+    dispatch(updateBlogs(newBlogs))
+  }
+
   return (
     <div>
       <h2>{blog.title}</h2>
@@ -67,6 +82,12 @@ const BlogView = ({ blog }) => {
       </div>
       <div className="blogUserName">added by {blog?.user?.name}</div>
       <h3>comments</h3>
+      <form onSubmit={addComment}>
+        <div>
+          <input name="comment" />
+        </div>
+        <button type="submit">add comment</button>
+      </form>
       <ul>
         {blog.comments.map((comment) => (
           <li>{comment.text}</li>
