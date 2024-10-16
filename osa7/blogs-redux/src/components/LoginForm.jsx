@@ -1,35 +1,80 @@
 import PropTypes from 'prop-types'
+import { TextField, Button } from '@mui/material'
 
-const LoginForm = ({
-  handleSubmit,
-  handleUsernameChange,
-  handlePasswordChange,
-  username,
-  password,
-}) => {
+import { useState, useEffect, useRef } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import blogService from '../services/blogs'
+import loginService from '../services/login'
+import { setNotification } from '../reducers/notificationReducer'
+import { updateBlogs } from '../reducers/blogsReducer'
+import { updateUser } from '../reducers/userReducer'
+
+const LoginForm = () => {
+  const dispatch = useDispatch()
+
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const user = useSelector((state) => {
+    return state.user
+  })
+  const [loginVisible, setLoginVisible] = useState(false)
+
+  blogService.getAll().then((blogs) => {
+    const orderedBlogs = blogs.sort(
+      (a, b) => parseInt(b.likes) - parseInt(a.likes),
+    )
+
+    dispatch(updateBlogs(orderedBlogs))
+  })
+
+  useEffect(() => {
+    if (user) {
+      blogService.setToken(user.token)
+    }
+  }, [])
+
+  const handleLogin = async (event) => {
+    event.preventDefault()
+
+    try {
+      const user = await loginService.login({
+        username,
+        password,
+      })
+
+      dispatch(updateUser(user))
+      setUsername('')
+      setPassword('')
+    } catch (exception) {
+      dispatch(setNotification(exception?.response?.data?.error, 'error', 5))
+    }
+  }
+
   return (
     <div>
       <h2>Login</h2>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleLogin}>
         <div>
-          username
-          <input
+          <TextField
+            label="username"
             data-testid="username"
             value={username}
-            onChange={handleUsernameChange}
+            onChange={({ target }) => setUsername(target.value)}
           />
         </div>
         <div>
-          password
-          <input
-            data-testid="password"
+          <TextField
+            label="password"
             type="password"
+            data-testid="password"
             value={password}
-            onChange={handlePasswordChange}
+            onChange={({ target }) => setPassword(target.value)}
           />
         </div>
-        <button type="submit">login</button>
+        <Button variant="contained" color="primary" type="submit">
+          login
+        </Button>
       </form>
     </div>
   )

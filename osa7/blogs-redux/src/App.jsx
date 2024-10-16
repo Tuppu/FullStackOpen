@@ -9,6 +9,7 @@ import blogService from './services/blogs'
 import { updateBlogs } from './reducers/blogsReducer'
 import Users from './components/Users'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { Container } from '@mui/material'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -36,7 +37,7 @@ const App = () => {
   }
 
   return (
-    <div>
+    <Container>
       <Notification />
       <Router>
         <NavigationMenu />
@@ -51,7 +52,7 @@ const App = () => {
         </Routes>
       </Router>
       <Footer />
-    </div>
+    </Container>
   )
 }
 
