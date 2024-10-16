@@ -12,9 +12,10 @@ const Notification = () => {
     borderWidth: 1,
     display: notification ? '' : 'none',
   }
+
   return (
     <Alert
-      severity="success"
+      severity={notification.messageType}
       className={notification.messageType}
       style={style}
     >

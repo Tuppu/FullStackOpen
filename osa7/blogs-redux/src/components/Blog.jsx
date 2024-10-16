@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { TableCell, TableRow } from '@mui/material'
 
 const Blog = ({ blog }) => {
   const blogStyle = {
@@ -10,13 +11,13 @@ const Blog = ({ blog }) => {
   }
 
   return (
-    <div className="blog" style={blogStyle}>
-      <div>
+    <TableRow key={blog.id}>
+      <TableCell>
         <Link to={`/blogs/${blog.id}`}>
           {blog.title} {blog.author}{' '}
         </Link>
-      </div>
-    </div>
+      </TableCell>
+    </TableRow>
   )
 }
 export default Blog

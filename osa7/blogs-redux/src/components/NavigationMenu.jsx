@@ -14,6 +14,11 @@ const NavigationMenu = () => {
     return state.user
   })
 
+  const style = {
+    position: 'absolute',
+    right: '0px',
+  }
+
   return (
     <AppBar position="static">
       <Toolbar>
@@ -28,7 +33,7 @@ const NavigationMenu = () => {
           users
         </Button>
         {user ? (
-          <em>
+          <em style={style}>
             {user.name} logged in{' '}
             <Button color="inherit" onClick={() => logUserOut()}>
               logout

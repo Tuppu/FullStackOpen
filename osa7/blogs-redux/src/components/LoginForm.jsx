@@ -17,7 +17,6 @@ const LoginForm = () => {
   const user = useSelector((state) => {
     return state.user
   })
-  const [loginVisible, setLoginVisible] = useState(false)
 
   blogService.getAll().then((blogs) => {
     const orderedBlogs = blogs.sort(
@@ -45,6 +44,7 @@ const LoginForm = () => {
       dispatch(updateUser(user))
       setUsername('')
       setPassword('')
+      dispatch(setNotification(`${user.name} logged in`, 'success', 5))
     } catch (exception) {
       dispatch(setNotification(exception?.response?.data?.error, 'error', 5))
     }
@@ -54,9 +54,10 @@ const LoginForm = () => {
     <div>
       <h2>Login</h2>
 
-      <form onSubmit={handleLogin}>
+      <form onSubmit={handleLogin} style={{ margin: '8px' }}>
         <div>
           <TextField
+            style={{ marginBottom: '8px' }}
             label="username"
             data-testid="username"
             value={username}
@@ -65,6 +66,7 @@ const LoginForm = () => {
         </div>
         <div>
           <TextField
+            style={{ marginBottom: '8px' }}
             label="password"
             type="password"
             data-testid="password"

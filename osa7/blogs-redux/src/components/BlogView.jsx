@@ -3,6 +3,14 @@ import blogService from '../services/blogs'
 import { updateBlogs } from '../reducers/blogsReducer'
 import { setNotification } from '../reducers/notificationReducer'
 import { Link } from 'react-router-dom'
+import {
+  TextField,
+  Button,
+  Input,
+  TextareaAutosize,
+  List,
+  ListItem,
+} from '@mui/material'
 
 const BlogView = ({ blog }) => {
   const dispatch = useDispatch()
@@ -78,25 +86,25 @@ const BlogView = ({ blog }) => {
       <h2>{blog.title}</h2>
       <Link to={blog.url}>{blog.url}</Link>
       <div className="blogLikes">
-        {blog.likes} likes <button onClick={() => clickLike(blog)}>like</button>
+        {blog.likes} likes <Button onClick={() => clickLike(blog)}>like</Button>
       </div>
       <div className="blogUserName">added by {blog?.user?.name}</div>
       <h3>comments</h3>
       <form onSubmit={addComment}>
         <div>
-          <input name="comment" />
+          <TextareaAutosize name="comment" />
         </div>
-        <button type="submit">add comment</button>
+        <Button type="submit">add comment</Button>
       </form>
-      <ul>
+      <List>
         {blog.comments.map((comment) => (
-          <li>{comment.text}</li>
+          <ListItem>{comment.text}</ListItem>
         ))}
-      </ul>
+      </List>
       <div>
-        <button onClick={() => clickDelete(blog)} style={DeleteVisibility}>
+        <Button onClick={() => clickDelete(blog)} style={DeleteVisibility}>
           remove
-        </button>
+        </Button>
       </div>
     </div>
   )

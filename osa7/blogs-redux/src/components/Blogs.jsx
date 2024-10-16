@@ -8,6 +8,15 @@ import blogService from '../services/blogs'
 import { setNotification } from '../reducers/notificationReducer'
 import { updateBlogs } from '../reducers/blogsReducer'
 import { useRef } from 'react'
+import {
+  Table,
+  TableBody,
+  TableContainer,
+  Paper,
+  TableCell,
+  TableHead,
+  TableRow,
+} from '@mui/material'
 
 const Blogs = () => {
   const dispatch = useDispatch()
@@ -74,9 +83,22 @@ const Blogs = () => {
       <Toggleable buttonLabel="new blog" ref={blogFormRef}>
         <BlogForm createNewBlog={createNewBlog} />
       </Toggleable>
-      {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} user={user} />
-      ))}
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>
+                <b>Title</b>
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {blogs.map((blog) => (
+              <Blog key={blog.id} blog={blog} user={user} />
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </div>
   )
 }

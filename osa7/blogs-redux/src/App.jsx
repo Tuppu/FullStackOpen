@@ -33,7 +33,11 @@ const App = () => {
   }, [])
 
   if (!user) {
-    return <LoginFormView />
+    return (
+      <Container>
+        <LoginFormView />
+      </Container>
+    )
   }
 
   return (
@@ -44,11 +48,26 @@ const App = () => {
         <h3>Blogs app</h3>
 
         <Routes>
-          <Route path="/" element={<div />} />
-          <Route path="/users" element={<Users />} />
-          <Route path="/users/:id" element={<Users />} />
-          <Route path="/blogs" element={<Blogs />} />
-          <Route path="/blogs/:id" element={<Blogs />} />
+          <Route
+            path="/"
+            element={user ? <div /> : <Navigate replace to="/login" />}
+          />
+          <Route
+            path="/users"
+            element={user ? <Users /> : <Navigate replace to="/login" />}
+          />
+          <Route
+            path="/users/:id"
+            element={user ? <Users /> : <Navigate replace to="/login" />}
+          />
+          <Route
+            path="/blogs"
+            element={user ? <Blogs /> : <Navigate replace to="/login" />}
+          />
+          <Route
+            path="/blogs/:id"
+            element={user ? <Blogs /> : <Navigate replace to="/login" />}
+          />
         </Routes>
       </Router>
       <Footer />

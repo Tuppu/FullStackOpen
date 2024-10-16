@@ -44,9 +44,11 @@ const Users = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell></TableCell>
               <TableCell>
-                <b>blogs created</b>
+                <b>fullname</b>
+              </TableCell>
+              <TableCell>
+                <b>Blogs created count</b>
               </TableCell>
             </TableRow>
           </TableHead>
