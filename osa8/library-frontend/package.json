@@ -11,7 +11,10 @@
   },
   "dependencies": {
     "@apollo/client": "^3.11.8",
+    "dotenv": "^16.4.5",
     "graphql": "^16.9.0",
+    "mongoose": "^7.0.0",
+    "mongoose-unique-validator": "^4.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
