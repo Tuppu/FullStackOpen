@@ -32,7 +32,7 @@ const typeDefs = `
   }
 
   type Author {
-    name: String!
+    name: String
     id: ID!
     born: Int
     bookCount: Int!
@@ -42,7 +42,7 @@ const typeDefs = `
     authorCount: Int!
     bookCount: Int!
     allBooks(author: String, genre: String): [Book!]!
-    allAuthors: [Author!]!
+    allAuthors(name: String): [Author!]!
   }
 
   type Mutation {
@@ -62,41 +62,55 @@ const typeDefs = `
 
 const resolvers = {
   Query: {
-    bookCount: async () => Book.collection.countDocuments(),
+    bookCount: async (root, args) => {
+      return Book.collection.countDocuments()
+    },
     authorCount: async () => Author.collection.countDocuments(),
     allAuthors: async (root, args) => {
-      // filters missing
-      return Author.find({})
+      if (!Object.keys(args).length) {
+        return Author.find({})
+      }
+
+      const filteredAuthors = Author.find({ name: args.name })
+
+      return filteredAuthors
     },
     allBooks: async (root, args) => {
-      // filters missing
-      return Book.find({})
+      if (!Object.keys(args).length) {
+        return Book.find({}).populate("author")
+      }
+
+      const filteredBooks = Book.find({ $or: [({ "author.name": args.author }, { genres: [args.genre] })] })
+
+      return filteredBooks
     },
+  },
+  Book: {
+    title: (root) => root.title,
+    published: (root) => root.published,
+    author: (root, args) => {
+      return root.populate("author", { name: 1 })
+    },
+    id: (root) => root.id,
+    genres: (root) => root.genres,
   },
   Author: {
     name: (root) => root.name,
     id: (root) => root.id,
     born: (root) => root.born,
     bookCount: async (root, args) => {
-      return Book.collection.countDocuments()
+      return Book.find({ "author.id": root.id }).count()
     },
   },
   Mutation: {
     addBook: async (root, args) => {
       const author = await new Author({ name: args.author })
-      try {
-        await author.save()
-      } catch (error) {
-        throw new GraphQLError("Saving author failed", {
-          extensions: {
-            code: "BAD_USER_INPUT",
-            invalidArgs: args.name,
-            error,
-          },
-        })
-      }
+      await author.save()
 
-      const book = await new Book({ title: args.title, published: args.published, genres: args.genres })
+      console.log(author, "author")
+      const book = await new Book({ title: args.title, published: args.published, genres: args.genres, author: author.id })
+
+      console.log(book, "book")
 
       try {
         await book.save()
