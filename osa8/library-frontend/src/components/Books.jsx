@@ -5,8 +5,6 @@ const Books = (props) => {
 
   const books = props.allBooks
 
-  console.log(books, "books")
-
   return (
     <div>
       <h2>books</h2>

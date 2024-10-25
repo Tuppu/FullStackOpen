@@ -36,6 +36,7 @@ const typeDefs = `
     name: String
     id: ID!
     born: Int
+    books: [Book!]!
     bookCount: Int!
   }
 
@@ -121,24 +122,26 @@ const resolvers = {
     name: (root) => root.name,
     id: (root) => root.id,
     born: (root) => root.born,
+
     bookCount: async (root, args) => {
-      return Book.find({ "author.id": root.id }).count()
+      return root?.books?.length ?? 0
     },
   },
   Mutation: {
     addBook: async (root, args, context) => {
       if (!context.currentUser) return
 
-      const author = await Author.findOne({ name: args.author })
+      let author = await Author.findOne({ name: args.author })
 
       if (!author) {
         author = await new Author({ name: args.author })
       }
 
+      let book = await new Book({ title: args.title, published: args.published, genres: args.genres })
       try {
-        await author.save()
+        await book.save()
       } catch (error) {
-        throw new GraphQLError("Saving author failed", {
+        throw new GraphQLError("Saving book failed", {
           extensions: {
             code: "BAD_USER_INPUT",
             invalidArgs: args.name,
@@ -147,12 +150,11 @@ const resolvers = {
         })
       }
 
-      const book = await new Book({ title: args.title, published: args.published, genres: args.genres, author: author.id })
-
+      author.books = author.books.concat(book)
       try {
-        await book.save()
+        await author.save()
       } catch (error) {
-        throw new GraphQLError("Saving user failed", {
+        throw new GraphQLError("Saving author failed", {
           extensions: {
             code: "BAD_USER_INPUT",
             invalidArgs: args.name,
