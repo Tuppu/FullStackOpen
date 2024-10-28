@@ -6,7 +6,7 @@ import Notify from "./components/Notify"
 import LoginForm from "./components/LoginForm"
 import Recommend from "./components/BookRecommendations"
 import { useQuery, useApolloClient } from "@apollo/client"
-import { ALL_AUTHORS, ALL_BOOKS, ME } from "./queries"
+import { ALL_AUTHORS, ALL_BOOKS, ALL_BOOKS_BY_GENRE, ME } from "./queries"
 
 const App = () => {
   const [token, setToken] = useState(null)
@@ -20,6 +20,7 @@ const App = () => {
   const resultAuthors = useQuery(ALL_AUTHORS)
   const resultBooks = useQuery(ALL_BOOKS)
   const meResult = useQuery(ME)
+  const resultBooksByGenre = useQuery(ALL_BOOKS_BY_GENRE, { variables: { genre: meResult?.data?.me?.favoriteGenre ?? "" } })
 
   if (token && page === "login") {
     setPage("authors")
@@ -28,12 +29,6 @@ const App = () => {
   if (resultAuthors.loading || resultBooks.loading || meResult.loading) {
     return <div>loading...</div>
   }
-
-  const favoriteBooks = resultBooks.data.allBooks.filter((book) => {
-    const favoriteGenre = meResult.data.me.favoriteGenre
-    const found = book.genres.includes(favoriteGenre)
-    if (found) return book
-  })
 
   const notify = (message) => {
     setErrorMessage(message)
@@ -75,7 +70,7 @@ const App = () => {
 
       <NewBook show={page === "add" && token} setError={notify} />
 
-      <Recommend show={page === "recommend" && token} favoriteBooks={favoriteBooks} favoriteGenre={meResult.data.me.favoriteGenre} />
+      <Recommend show={page === "recommend" && token} favoriteBooks={resultBooksByGenre.data.allBooks ?? []} favoriteGenre={meResult.data.me.favoriteGenre} />
 
       <LoginForm show={page === "login"} setToken={setToken} setError={notify} />
     </div>
