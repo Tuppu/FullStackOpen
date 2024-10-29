@@ -5,8 +5,8 @@ import NewBook from "./components/NewBook"
 import Notify from "./components/Notify"
 import LoginForm from "./components/LoginForm"
 import Recommend from "./components/BookRecommendations"
-import { useQuery, useApolloClient } from "@apollo/client"
-import { ALL_AUTHORS, ALL_BOOKS, ALL_BOOKS_BY_GENRE, ME } from "./queries"
+import { useQuery, useApolloClient, useSubscription } from "@apollo/client"
+import { ALL_AUTHORS, ALL_BOOKS, ALL_BOOKS_BY_GENRE, ME, BOOK_ADDED } from "./queries"
 
 const App = () => {
   const [token, setToken] = useState(null)
@@ -25,6 +25,12 @@ const App = () => {
   if (token && page === "login") {
     setPage("authors")
   }
+
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data }) => {
+      alert(`book '${data?.data?.bookAdded?.title}' added from some client`)
+    },
+  })
 
   if (resultAuthors.loading || resultBooks.loading || meResult.loading) {
     return <div>loading...</div>
@@ -70,7 +76,11 @@ const App = () => {
 
       <NewBook show={page === "add" && token} setError={notify} />
 
-      <Recommend show={page === "recommend" && token} favoriteBooks={resultBooksByGenre.data.allBooks ?? []} favoriteGenre={meResult.data.me.favoriteGenre} />
+      <Recommend
+        show={page === "recommend" && token}
+        favoriteBooks={resultBooksByGenre.data.allBooks ?? []}
+        favoriteGenre={meResult?.data?.me?.favoriteGenre ?? ""}
+      />
 
       <LoginForm show={page === "login"} setToken={setToken} setError={notify} />
     </div>
