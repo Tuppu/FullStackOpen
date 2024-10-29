@@ -17,7 +17,7 @@ const resolvers = {
         return Author.find({})
       }
 
-      const filteredAuthors = Author.find({ name: args.name })
+      const filteredAuthors = Author.find({ name: args.name }) // there is no n+1 problem
 
       return filteredAuthors
     },
