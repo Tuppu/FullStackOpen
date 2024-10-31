@@ -6,6 +6,7 @@
   "scripts": {
     "ts-node": "ts-node",
     "calculateBmi": "ts-node bmiCalculator.ts",
+    "calculateExercises": "ts-node exerciseCalculator.ts",
     "multiply": "ts-node multiplier.ts",
     "calculate": "ts-node calculator.ts"
   },
