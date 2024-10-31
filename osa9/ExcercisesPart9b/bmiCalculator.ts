@@ -1,6 +1,6 @@
 import { parseArguments } from './misc';
 
-const calculateBmi = (cmHeight: number, kgMass: number): string => {
+export const calculateBmi = (cmHeight: number, kgMass: number): string => {
   if (cmHeight === 0) throw new Error("Can't divide by 0!");
 
   const bmi = kgMass / (cmHeight / 100.0) ** 2;
