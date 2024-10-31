@@ -1,3 +1,5 @@
+import { parseArgumentsNumberArray } from './misc';
+
 interface ExcerciseResults {
   periodLength: number;
   trainingDays: number;
@@ -21,9 +23,9 @@ function switchExceciseResult(rating: number) {
   }
 }
 
-let originalTarget = 2;
-
 const exceciseCalculator = (values: number[]): ExcerciseResults => {
+  const originalTarget: number = Number(values.shift());
+
   const periodLength: number = values.length;
   const trainingDays: number = values.filter((x) => x > 0).length;
   const target: number = originalTarget;
@@ -49,7 +51,8 @@ const exceciseCalculator = (values: number[]): ExcerciseResults => {
 };
 
 try {
-  console.log(exceciseCalculator([3, 0, 2, 4.5, 0, 3, 1]));
+  const parsedNumbers: number[] = parseArgumentsNumberArray(process.argv);
+  console.log(exceciseCalculator(parsedNumbers));
 } catch (error: unknown) {
   let errorMessage = 'Something went wrong: ';
   if (error instanceof Error) {

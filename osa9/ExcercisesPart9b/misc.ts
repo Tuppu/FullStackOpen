@@ -3,6 +3,8 @@ interface MultiplyValues {
   value2: number;
 }
 
+export const isNotNumber = (argument: any): boolean => isNaN(Number(argument));
+
 export const parseArguments = (args: string[]): MultiplyValues => {
   if (args.length < 4) throw new Error('Not enough arguments');
   if (args.length > 4) throw new Error('Too many arguments');
@@ -15,4 +17,20 @@ export const parseArguments = (args: string[]): MultiplyValues => {
   } else {
     throw new Error('Provided values were not numbers!');
   }
+};
+
+export const parseArgumentsNumberArray = (args: string[]): number[] => {
+  if (args.length < 3) throw new Error('Not enough arguments');
+
+  const parsedNumbers: Array<number> = [];
+
+  for (let i = 2; i < args.length; i++) {
+    if (isNotNumber(args[i])) {
+      throw new Error(`Provided value '${args[i]}' @ #${[i]} were not number!`);
+    }
+    let tempNumber: number = +args[i];
+    parsedNumbers.push(tempNumber);
+  }
+
+  return parsedNumbers;
 };

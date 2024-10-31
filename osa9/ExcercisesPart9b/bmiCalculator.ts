@@ -17,9 +17,8 @@ const calculateBmi = (cmHeight: number, kgMass: number): string => {
 };
 
 try {
-  //const { value1, value2 } = parseArguments(process.argv);
-  //console.log(calculateBmi(value1, value2));
-  console.log(calculateBmi(180, 74));
+  const { value1, value2 } = parseArguments(process.argv);
+  console.log(calculateBmi(value1, value2));
 } catch (error: unknown) {
   let errorMessage = 'Something bad happened.';
   if (error instanceof Error) {
