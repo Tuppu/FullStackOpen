@@ -23,7 +23,7 @@ function switchExceciseResult(rating: number) {
   }
 }
 
-const exceciseCalculator = (values: number[]): ExcerciseResults => {
+export const exceciseCalculator = (values: number[]): ExcerciseResults => {
   const originalTarget: number = Number(values.shift());
 
   const periodLength: number = values.length;
@@ -54,7 +54,7 @@ try {
   const parsedNumbers: number[] = parseArgumentsNumberArray(process.argv);
   console.log(exceciseCalculator(parsedNumbers));
 } catch (error: unknown) {
-  let errorMessage = 'Something went wrong: ';
+  let errorMessage = 'malformatted parameters';
   if (error instanceof Error) {
     errorMessage += error.message;
   }

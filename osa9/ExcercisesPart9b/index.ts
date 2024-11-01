@@ -2,6 +2,7 @@ import { calculateBmi } from './bmiCalculator';
 import { calculator, Operation } from './calculator';
 import express from 'express';
 import { isNotNumber } from './misc';
+import { exceciseCalculator } from './exerciseCalculator';
 
 const app = express();
 app.use(express.json());
@@ -47,6 +48,36 @@ app.get('/calculate', (_req, res) => {
 
   res.status(400).send(errorMessage);
 }
+
+});
+
+app.post('/exercises', (req, res) => {
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const { daily_exercises, target } = req.body;
+
+  if (!daily_exercises || !target ) {
+    res.status(400).send({ error: 'parameters missing' });
+  }
+
+  if (!(daily_exercises as Array<number>) || !(Number(target))) {
+    res.status(400).send({ error: 'malformatted parameters' });
+  }
+
+  const converted = daily_exercises as Array<number>;
+  const values: Array<number> = [Number(target)].concat(converted);
+
+  values.forEach((value) => {
+    if(isNotNumber(value)) {
+      res.status(400).send({ error: 'malformatted parameters' });
+    }
+  });
+
+  const result = exceciseCalculator(values);
+
+  res.send({
+    result
+  });
 
 });
 
