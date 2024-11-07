@@ -1,9 +1,15 @@
 import patients from '../../data/patients';
 
-import { PatientEntry } from '../types';
+import { PatientEntry, NonSensitivePatientEntry } from '../types';
 
 const getEntries = (): PatientEntry[] => {
   return patients;
+};
+
+const getEntriesNonSSN = (): NonSensitivePatientEntry[] => {
+  return patients.map(({ id, name, dateOfBirth, gender, occupation }) => ({
+    id, name, dateOfBirth, gender, occupation
+  }));
 };
 
 const addPatient = () => {
@@ -12,5 +18,6 @@ const addPatient = () => {
 
 export default {
   getEntries,
+  getEntriesNonSSN,
   addPatient
 };

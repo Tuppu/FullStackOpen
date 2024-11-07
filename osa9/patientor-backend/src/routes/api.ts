@@ -11,13 +11,11 @@ router.get('/ping', (_req, res) => {
   });
 
   router.get('/patients', (_req, res) => {
-    console.log('patients fetch');
     res.set('Access-Control-Allow-Origin', 'http://localhost:5173');
-    //res.json(patientService.getEntries());
+    res.json(patientService.getEntriesNonSSN());
   });
 
   router.get('/diagnoses', (_req, res) => {
-    console.log('diagnoses');
     res.set('Access-Control-Allow-Origin', 'http://localhost:5173');
     res.json(diagnoseService.getEntries());
   });
