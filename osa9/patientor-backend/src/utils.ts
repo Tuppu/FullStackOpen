@@ -31,8 +31,7 @@ const parseSSN = (ssn: unknown): string => {
 };
 
 const isGender = (param: string): param is Gender => {
-  //return Object.values(Gender).map(v => v.toString()).includes(param);
-  return param ? true : false;
+  return Object.values(Gender).map(v => v.toString()).includes(param);
 };
 
 const parseGender = (gender: unknown): Gender => {

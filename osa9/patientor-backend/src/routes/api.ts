@@ -15,11 +15,8 @@ router.get('/ping', (_req, res) => {
   });
 
   router.post('/patients', (req, res) => {
-    console.log('post patients');
-    console.log(req.body, 'req.body');
     
     const newPatientEntry = toNewPatientEntry(req.body);
-    console.log(newPatientEntry, 'newPatientEntry');
 
     const addedEntry = patientService.addPatient(newPatientEntry);
     res.json(addedEntry);
