@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { DiaryEntry, Visibility, Weather } from './types';
-import { getAllDiaries, createDiary } from './diaryService';
+import diaryService from './diaryService';
+import axios from 'axios';
 
 const App = () => {
   const [newDiaryDate, setNewDiaryDate] = useState('');
@@ -8,37 +9,54 @@ const App = () => {
   const [newDiaryVisibility, setNewDiaryVisibility] = useState('');
   const [newDiaryComment, setNewDiaryComment] = useState('');
   const [diaries, setDiaries] = useState<DiaryEntry[]>([]);
+  const [error, setError] = useState<string>();
 
   useEffect(() => {
-    getAllDiaries().then(data => {
+    diaryService.getAllDiaries().then(data => {
       setDiaries(data)
     })
   }, [])
 
-  const diaryCreation = (event: React.SyntheticEvent) => {
+  const diaryCreation = async (event: React.SyntheticEvent) => {
     event.preventDefault()
     
-    const diaryToAdd = {
-      date: newDiaryDate,
-      weather: newDiaryWeather as Weather,
-      visibility: newDiaryVisibility as Visibility,
-      comment: newDiaryComment,
-      id: diaries.length + 1
+    try {
+      const diaryToAdd = {
+        date: newDiaryDate,
+        weather: newDiaryWeather as Weather,
+        visibility: newDiaryVisibility as Visibility,
+        comment: newDiaryComment,
+        id: diaries.length + 1
+      }
+
+      const diary = await diaryService.createDiary(diaryToAdd)
+      setDiaries(diaries.concat(diary));
+
+      setNewDiaryDate('')
+      setNewDiaryWeather('')
+      setNewDiaryVisibility('')
+      setNewDiaryComment('')
+
+    } catch (e: unknown) {
+      if (axios.isAxiosError(e)) {
+        if (e?.response?.data && typeof e?.response?.data === "string") {
+          const message = e.response.data.replace('Something went wrong. Error: ', '');
+          console.error(message);
+          setError(message);
+        } else {
+          setError("Unrecognized axios error");
+        }
+      } else {
+        console.error("Unknown error", e);
+        setError("Unknown error");
+      }
     }
-
-    createDiary(diaryToAdd).then(data => {
-      setDiaries(diaries.concat(data));
-    })
-
-    setNewDiaryDate('')
-    setNewDiaryWeather('')
-    setNewDiaryVisibility('')
-    setNewDiaryComment('')
   };
 
   return (
     <div>
       <h2>Add new entry</h2>
+      {error && <p className="error">Error: {error}</p>}
       <form onSubmit={diaryCreation}>
         <div>
           date <input
@@ -46,14 +64,14 @@ const App = () => {
           onChange={(event) => setNewDiaryDate(event.target.value)} />
         </div>
         <div>
-          weather <input
-          value={newDiaryWeather}
-          onChange={(event) => setNewDiaryWeather(event.target.value)} />
-        </div>
-        <div>
           visibility <input
           value={newDiaryVisibility}
           onChange={(event) => setNewDiaryVisibility(event.target.value)} />
+        </div>
+        <div>
+          weather <input
+          value={newDiaryWeather}
+          onChange={(event) => setNewDiaryWeather(event.target.value)} />
         </div>
         <div>
           Comment: <input
