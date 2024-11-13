@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { DiaryEntry, Visibility, Weather } from './types';
-import axios from 'axios';
+import { getAllDiaries, createDiary } from './diaryService';
 
 const App = () => {
   const [newDiaryDate, setNewDiaryDate] = useState('');
@@ -10,13 +10,14 @@ const App = () => {
   const [diaries, setDiaries] = useState<DiaryEntry[]>([]);
 
   useEffect(() => {
-    axios.get('http://localhost:3000/api/diaries').then(response => {
-      setDiaries(response.data as DiaryEntry[])
+    getAllDiaries().then(data => {
+      setDiaries(data)
     })
   }, [])
 
   const diaryCreation = (event: React.SyntheticEvent) => {
     event.preventDefault()
+    
     const diaryToAdd = {
       date: newDiaryDate,
       weather: newDiaryWeather as Weather,
@@ -24,7 +25,11 @@ const App = () => {
       comment: newDiaryComment,
       id: diaries.length + 1
     }
-    setDiaries(diaries.concat(diaryToAdd));
+
+    createDiary(diaryToAdd).then(data => {
+      setDiaries(diaries.concat(data));
+    })
+
     setNewDiaryDate('')
     setNewDiaryWeather('')
     setNewDiaryVisibility('')
