@@ -11,6 +11,24 @@ const App = () => {
   const [diaries, setDiaries] = useState<DiaryEntry[]>([]);
   const [error, setError] = useState<string>();
 
+  interface VisibilityOption{
+    value: Visibility;
+    label: string;
+  }
+
+  const visibilityOptions: VisibilityOption[] = Object.values(Visibility).map(v => ({
+    value: v, label: v.toString()
+  }));
+
+  interface WeatherOption{
+    value: Weather;
+    label: string;
+  }
+
+  const weatherOptions: WeatherOption[] = Object.values(Weather).map(v => ({
+    value: v, label: v.toString()
+  }));
+
   useEffect(() => {
     diaryService.getAllDiaries().then(data => {
       setDiaries(data)
@@ -59,19 +77,36 @@ const App = () => {
       {error && <p className="error">Error: {error}</p>}
       <form onSubmit={diaryCreation}>
         <div>
-          date <input
+          date <input type="date"
           value={newDiaryDate}
           onChange={(event) => setNewDiaryDate(event.target.value)} />
         </div>
         <div>
-          visibility <input
-          value={newDiaryVisibility}
-          onChange={(event) => setNewDiaryVisibility(event.target.value)} />
+          visibility
+          {visibilityOptions.map(option =>
+            <>
+              <input type="radio"
+              value={option.value}
+              id={option.label}
+              checked={newDiaryVisibility == option.value}
+              onChange={(event) => setNewDiaryVisibility(event.target.value)} />
+              <label>{option.value}</label>
+            </>
+          )}
+           
         </div>
         <div>
-          weather <input
-          value={newDiaryWeather}
-          onChange={(event) => setNewDiaryWeather(event.target.value)} />
+          weather
+          {weatherOptions.map(option =>
+            <>
+              <input type="radio"
+              value={option.value}
+              id={option.label}
+              checked={newDiaryWeather == option.value}
+              onChange={(event) => setNewDiaryWeather(event.target.value)} />
+              <label>{option.value}</label>
+            </>
+          )}
         </div>
         <div>
           Comment: <input
