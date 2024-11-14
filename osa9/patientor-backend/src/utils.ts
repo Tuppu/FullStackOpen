@@ -1,4 +1,4 @@
-import { Gender, NewPatientEntry } from "./types";
+import { Gender, NewPatient } from "./types";
 import { z } from 'zod';
 
 export const NewEntrySchema = z.object({
@@ -6,9 +6,10 @@ export const NewEntrySchema = z.object({
   dateOfBirth: z.string().date(),
   ssn: z.string(),
   gender: z.nativeEnum(Gender),
-  occupation: z.string()
+  occupation: z.string(),
+  entries: z.string().array()
 });
 
-export const toNewPatientEntry = (object: unknown): NewPatientEntry => {
+export const toNewPatientEntry = (object: unknown): NewPatient => {
   return NewEntrySchema.parse(object);
 };

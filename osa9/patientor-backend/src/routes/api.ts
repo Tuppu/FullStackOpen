@@ -4,7 +4,7 @@ import diagnoseService from '../services/diagnoseService';
 import { NewEntrySchema } from '../utils';
 
 import { z } from 'zod';
-import { PatientEntry, NewPatientEntry} from '../types';
+import { Patient, NewPatient} from '../types';
 
 const router = express.Router();
 
@@ -34,7 +34,17 @@ router.get('/ping', (_req, res) => {
     res.json(patientService.getEntriesNonSSN());
   });
 
-  router.post('/patients', newPatientParser, (req: Request<unknown, unknown, NewPatientEntry>, res: Response<PatientEntry>) => {
+  router.get('/patients/:id', (req, res) => {
+    const patient = patientService.findById(req.params.id);
+  
+    if (patient) {
+      res.send(patient);
+    } else {
+      res.sendStatus(404);
+    }
+  });
+
+  router.post('/patients', newPatientParser, (req: Request<unknown, unknown, NewPatient>, res: Response<Patient>) => {
     const addedEntry = patientService.addPatient(req.body);
     res.json(addedEntry);
   });
