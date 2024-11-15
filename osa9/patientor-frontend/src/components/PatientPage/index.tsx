@@ -6,6 +6,7 @@ import { Gender, Patient } from '../../types';
 import MaleIcon from '@mui/icons-material/Male';
 import FemaleIcon from '@mui/icons-material/Female';
 import TransgenderIcon from '@mui/icons-material/Transgender';
+import PatientEntriesContent from '../PatientEntriesContent';
 
 const PatientPage = () => {
 
@@ -41,7 +42,8 @@ const PatientPage = () => {
         <Typography variant="body1" gutterBottom>
           ssh: {patient?.ssn}<br />
           occupation: {patient?.occupation}
-      </Typography>
+        </Typography>
+        <PatientEntriesContent entries={patient?.entries} />
       </Box>
     </div>
   );
