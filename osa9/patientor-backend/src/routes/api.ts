@@ -26,7 +26,6 @@ const errorMiddleware = (error: unknown, _req: Request, res: Response, next: Nex
 };
 
 router.get('/ping', (_req, res) => {
-    console.log('someone pinged here');
     res.json('{"content": "Pong!"}');
   });
 
