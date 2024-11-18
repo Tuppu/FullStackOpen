@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { NewEntrySchema } from './utils';
+import { NewPatientSchema as NewPatientSchema } from './utils';
 
 export enum Gender {
     male = "male",
@@ -59,7 +59,7 @@ export interface Diagnose {
     latin?: string;
 }
 
-export type NewPatient = z.infer<typeof NewEntrySchema>; 
+export type NewPatient = z.infer<typeof NewPatientSchema>; 
 export type NonSensitivePatient = Omit<NewPatient, 'ssn' | 'entries'>;
 
 // Define special omit for unions

@@ -20,8 +20,6 @@ const assertNever = (value: Entry): never => {
 
 const hospital = (entry: HospitalEntry, diagnoses: Diagnose[]): JSX.Element => { 
 
-console.log(entry)
-
   return (
     <div className="entryCorners hospital">
       <div>{entry.date} <MasksIcon /></div>
