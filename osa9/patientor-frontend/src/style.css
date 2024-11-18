@@ -1,0 +1,32 @@
+.entryCorners {
+  border-radius: 0.25em;
+  border: 0.1em solid;
+  padding: 1em;
+  margin-top: 0.5em;
+}
+
+.occupationalHealthcare {
+  border: 0.1em solid #3dad21;
+}
+
+.healthCheck {
+  border: 0.1em solid #2d5de2;
+}
+
+.hospital {
+  border: 0.1em solid #d12d21;
+}
+
+.healthRating0 {
+  color: green;
+}
+
+.healthRating1 {
+  color: yellowgreen;
+}
+.healthRating2 {
+  color: orange;
+}
+.healthRating3 {
+  color: red;
+}

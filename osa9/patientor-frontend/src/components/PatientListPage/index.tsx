@@ -4,9 +4,7 @@ import axios from 'axios';
 
 import { PatientFormValues, Patient } from "../../types";
 import AddPatientModal from "../AddPatientModal";
-
 import HealthRatingBar from "../HealthRatingBar";
-
 import patientService from "../../services/patients";
 
 interface Props {
