@@ -1,4 +1,4 @@
-import { EntryWithoutId, Gender, HealthCheckRating, NewPatient } from "./types";
+import { Discharge, EntryWithoutId, Gender, HealthCheckRating, NewPatient, SickLeave } from "./types";
 import { z } from 'zod';
 
 export const NewPatientSchema = z.object({
@@ -36,6 +36,14 @@ const parseSpecialist = (specialist: unknown): string => {
   return specialist;
 };
 
+const parseEmployerName = (employerName: unknown): string => {
+  if (!isString(employerName)) {
+    throw new Error('Incorrect employerName');
+  }
+
+  return employerName;
+};
+
 const parseDescription = (description: unknown): string => {
   if (!isString(description)) {
     throw new Error('Incorrect description');
@@ -55,6 +63,32 @@ const parseHealthCheckRating = (healthCheckRating: unknown): HealthCheckRating =
   return healthCheckRating;
 };
 
+const isDischarge = (param: unknown): boolean => {
+  const triedConvert: Discharge | undefined  = param as Discharge;
+
+  return (triedConvert !== undefined);
+};
+
+const parseDischarge = (discharge: unknown): Discharge => {
+  if (!isDischarge(discharge)) {
+      throw new Error('Incorrect discharge: ' + discharge);
+  }
+  return discharge as Discharge;
+};
+
+const isSickLeave = (param: unknown): boolean => {
+  const triedConvert: SickLeave | undefined  = param as SickLeave;
+
+  return (triedConvert !== undefined);
+};
+
+const parseSickleave = (sickLeave: unknown): SickLeave => {
+  if (!isSickLeave(sickLeave)) {
+      throw new Error('Incorrect sickLeave: ' + sickLeave);
+  }
+  return sickLeave as SickLeave;
+};
+
 export const toNewPatientEntry = (object: unknown): EntryWithoutId => {
   if ( !object || typeof object !== 'object' ) {
     throw new Error('Incorrect or missing data');
@@ -67,6 +101,27 @@ export const toNewPatientEntry = (object: unknown): EntryWithoutId => {
       specialist: parseSpecialist(object.specialist),
       description: parseDescription(object.description),
       healthCheckRating: parseHealthCheckRating(object.healthCheckRating)
+    };
+    return newEntry;
+  }
+  else if ('date' in object && 'specialist' in object && 'type' in object && 'description' in object && 'discharge' in object) {
+    const newEntry: EntryWithoutId = {
+      type: 'Hospital',
+      date: parseDate(object.date),
+      specialist: parseSpecialist(object.specialist),
+      description: parseDescription(object.description),
+      discharge: parseDischarge(object.discharge)
+    };
+    return newEntry;
+  }
+  else if ('date' in object && 'specialist' in object && 'employerName' in object && 'type' in object && 'description' in object && 'sickLeave' in object) {
+    const newEntry: EntryWithoutId = {
+      type: 'OccupationalHealthcare',
+      date: parseDate(object.date),
+      specialist: parseSpecialist(object.specialist),
+      employerName: parseEmployerName(object.employerName),
+      description: parseDescription(object.description),
+      sickLeave: parseSickleave(object.sickLeave)
     };
     return newEntry;
   }
