@@ -30,3 +30,9 @@
 .healthRating3 {
   color: red;
 }
+
+.newHealthCheckEntry {
+  border-style: dotted;
+  box-sizing: border-box;
+  padding: 1em;
+}

@@ -1,17 +1,50 @@
-import { Box, Typography } from '@mui/material';
+import { Alert, Box, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import patientService from "../../services/patients";
-import { Gender, Patient } from '../../types';
+import { EntryWithoutId, Gender, Patient } from '../../types';
 import MaleIcon from '@mui/icons-material/Male';
 import FemaleIcon from '@mui/icons-material/Female';
 import TransgenderIcon from '@mui/icons-material/Transgender';
 import PatientEntriesContent from '../PatientEntriesContent';
+import AddNewEntry from './AddNewEntry';
+import patientEntryService from '../../services/patientEntry';
+import axios from 'axios';
 
 const PatientPage = () => {
 
   const [patient, setPatient] = useState<Patient>();
+  const [error, setError] = useState<string>();
   const id = useParams().id;
+
+  const submitNewEntry = async (values: EntryWithoutId) => {
+    try {
+      if (id === undefined) return;
+
+      const patientEntry = await patientEntryService.create(values, id);
+      if (patientEntry) {
+        patientService.getOneById(id)
+        .then((found) => 
+          {
+            setPatient(found);
+            setError('');
+        });
+      }
+    } catch (e: unknown) {
+      if (axios.isAxiosError(e)) {
+        if (e?.response?.data && typeof e?.response?.data === "string") {
+          const message = e.response.data.replace('Something went wrong. Error: ', '');
+          console.error(message);
+          setError(message);
+        } else {
+          setError("Unrecognized axios error");
+        }
+      } else {
+        console.error("Unknown error", e);
+        setError("Unknown error");
+      }
+    }
+  };
 
   useEffect(() => {
     if (id) {
@@ -43,6 +76,8 @@ const PatientPage = () => {
           ssh: {patient?.ssn}<br />
           occupation: {patient?.occupation}
         </Typography>
+        {error && <Alert severity="error">{error}</Alert>}
+        <AddNewEntry onSubmit={submitNewEntry} />
         <PatientEntriesContent entries={patient?.entries} />
       </Box>
     </div>
