@@ -19,10 +19,10 @@ interface BaseEntry {
 }
 
 export enum HealthCheckRating {
-  "Healthy" = 0,
-  "LowRisk" = 1,
-  "HighRisk" = 2,
-  "CriticalRisk" = 3
+  "Healthy" = '0',
+  "LowRisk" = '1',
+  "HighRisk" = '2',
+  "CriticalRisk" = '3'
 }
 
 export type Entry =
@@ -30,6 +30,8 @@ export type Entry =
     | OccupationalHealthcareEntry
     | HealthCheckEntry;
   
+export const typeStrings = ['Hospital','HealthCheck','OccupationalHealthcare'];
+
 export interface HealthCheckEntry extends BaseEntry {
     type: "HealthCheck";
     healthCheckRating: HealthCheckRating;

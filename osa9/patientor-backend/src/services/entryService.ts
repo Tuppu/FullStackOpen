@@ -18,7 +18,7 @@ const addEntry = (entry: EntryWithoutId, patientID: string): Entry => {
     id: entryId,
     diagnosisCodes: parseDiagnosisCodes(entry.diagnosisCodes),
     ...entry
-  };
+  } as Entry;
 
   patients.find(patient => patient.id == patientID)
   ?.entries.push(newEntry);

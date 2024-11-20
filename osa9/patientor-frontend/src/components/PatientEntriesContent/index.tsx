@@ -54,7 +54,7 @@ const healthCheck = (entry: HealthCheckEntry , diagnoses: Diagnose[]): JSX.Eleme
           );}
         )}
       </ul>
-      <div className={healthCheckRatingValue} > { (entry as HealthCheckEntry)?.healthCheckRating > 0 ? <HeartBroken /> : <Favorite /> }</div>
+      <div className={healthCheckRatingValue} > { ((entry as HealthCheckEntry)?.healthCheckRating) as unknown as number > 0 ? <HeartBroken /> : <Favorite /> }</div>
       <div>diagnose by {entry.specialist}</div>
     </div>
   );
@@ -84,11 +84,11 @@ const PatientEntriesContent = ({entries}: HeaderProps): JSX.Element => {
   const [diagnoses, setDiagnoses] = useState<Diagnose[]>([]);
   
   useEffect(() => {
-    const fetchPatientList = async () => {
+    const fetchDiagnosesList = async () => {
       const diagnoses = await diagnosesService.getAll();
       setDiagnoses(diagnoses);
     };
-    void fetchPatientList();
+    void fetchDiagnosesList();
   }, []);
 
   if (entries === undefined || entries.length === 0) {
